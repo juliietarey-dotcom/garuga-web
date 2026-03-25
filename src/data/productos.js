@@ -7,7 +7,7 @@ export const productosData = [
   { categoria: "velas de soja", nombre: "Vela Olivia -- 180 cc", precio: "$9500", desc: "Esencia a elección", img: "/productos/olivia.jpg", variantesStock: ["Coco", "Vainilla"] },
   { categoria: "velas de soja", nombre: "Vela Cuenco de madera -- 100 cc", precio: "$10000", desc: "Esencia a elección", img: "/productos/cuenco.jpg", variantesStock: ["Coco", "Vainilla", "Bamboo"] },
   { categoria: "velas de soja", nombre: "Vela Caramelera -- 80 cc", precio: "$11000", desc: "Esencia a elección", img: "/productos/caramelera.jpg", variantesStock: ["Vainilla", "Bamboo"] },
-  { categoria: "velas de soja", nombre: "Vela Rune -- 200 cc", precio: "$15000", desc: "Esencia a elección", img: "/productos/rune.jpg", variantesStock: ["Coco", "Vainilla", "Bamboo", "Pepino-Sandía"] },
+  { categoria: "velas de soja", nombre: "Vela Rune -- 200 cc", precio: "$12500", desc: "Esencia a elección", img: "/productos/rune.jpg", variantesStock: ["Coco", "Vainilla", "Bamboo", "Pepino-Sandía"] },
   
   // DIFUSORES
   { categoria: "difusores", nombre: "Difusor Ámbar 125 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/ambar.jpg", variantesStock: ["Coco", "Limón", "Pepino-Sandía", "Cuero y Madera"] },
