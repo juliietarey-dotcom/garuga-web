@@ -6,12 +6,12 @@ export const productosData = [
   { categoria: "velas de soja", nombre: "Vela Hexagonal -- 150 cc", precio: "$8000", desc: "Esencia a elección", img: "/productos/hexagonal.jpg", variantesStock: ["Vainilla", "Limón", "Tilo-Jazmín", "Papaya"] },
   { categoria: "velas de soja", nombre: "Vela Olivia -- 180 cc", precio: "$9500", desc: "Esencia a elección", img: "/productos/olivia.jpg", variantesStock: ["Coco", "Vainilla"] },
   { categoria: "velas de soja", nombre: "Vela Cuenco de madera -- 100 cc", precio: "$10000", desc: "Esencia a elección", img: "/productos/cuenco.jpg", variantesStock: ["Coco", "Vainilla", "Bamboo"] },
-  { categoria: "velas de soja", nombre: "Vela Caramelera -- 80 cc", precio: "$11000", desc: "Esencia a elección", img: "/productos/caramelera.jpg", variantesStock: ["Vainilla", "Bamboo"] },
+  { categoria: "velas de soja", nombre: "Vela Caramelera -- 80 cc", precio: "$11000", desc: "Esencia a elección", img: "/productos/caramelera.jpg", variantesStock: [] },
   { categoria: "velas de soja", nombre: "Vela Rune -- 200 cc", precio: "$12500", desc: "Esencia a elección", img: "/productos/rune.jpg", variantesStock: ["Coco", "Vainilla", "Bamboo", "Pepino-Sandía"] },
   
   // DIFUSORES
   { categoria: "difusores", nombre: "Difusor Ámbar 125 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/ambar.jpg", variantesStock: ["Coco", "Limón", "Pepino-Sandía", "Cuero y Madera"] },
-  { categoria: "difusores", nombre: "Difusor Cristal 125 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/cristal.jpg", variantesStock: ["Vainilla", "Limón", "Bamboo", "Papaya", "Pepino-Sandía", "Peonías"] },
+  { categoria: "difusores", nombre: "Difusor Cristal 125 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/cristal.jpg", variantesStock: ["Limón", "Papaya", "Pepino-Sandía", "Peonías"] },
 
   // PERFUMINAS
   { categoria: "perfuminas", nombre: "Perfumina 250 ml", precio: "$14000", desc: "Esencia a elección", img: "/productos/perfumina250.jpg", variantesStock: [] },
