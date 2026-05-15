@@ -14,7 +14,7 @@ export const productosData = [
   { categoria: "difusores", nombre: "Difusor Cristal 125 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/cristal.jpg", variantesStock: ["Limón", "Papaya", "Pepino-Sandía"] },
 
   // PERFUMINAS
-  { categoria: "perfuminas", nombre: "Perfumina 250 ml", precio: "$14000", desc: "Esencia a elección", img: "/productos/perfumina250.jpg", variantesStock: [] },
+  { categoria: "perfuminas", nombre: "Perfumina 250 ml", precio: "$12000", desc: "Esencia a elección", img: "/productos/perfumina250.jpg", variantesStock: [] },
   { categoria: "perfuminas", nombre: "Perfumina 500 ml", precio: "$20000", desc: "Esencia a elección", img: "/productos/perfumina500.jpg", variantesStock: [] },
 ];
 
