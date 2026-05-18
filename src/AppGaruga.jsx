@@ -7,7 +7,6 @@ export default function GarugaLanding() {
   const [imagenModal, setImagenModal] = useState(null);
   const [hidden, setHidden] = useState(false);
   
-  // ESTADOS DEL CARRITO
   const [carrito, setCarrito] = useState([]);
   const [carritoAbierto, setCarritoAbierto] = useState(false);
 
@@ -30,16 +29,33 @@ export default function GarugaLanding() {
     }
   };
 
+  // Filtrar productos: ahora verifica si variantesStock tiene alguna clave con stock mayor a 0
   const productosFiltrados = productosData.filter(p => {
     if (categoriaActual === "todos") return true;
-    if (categoriaActual === "stock disponible") return p.variantesStock && p.variantesStock.length > 0;
+    if (categoriaActual === "stock disponible") {
+      return p.variantesStock && Object.keys(p.variantesStock).length > 0;
+    }
     return p.categoria === categoriaActual;
   });
 
-  // FUNCIONES DEL CARRITO
-  const agregarAlCarrito = (producto, aromaSeleccionado = "") => {
+  // Helper para saber cuánto stock real queda disponible restando lo que ya está en el carrito
+  const obtenerStockDisponibleReal = (producto, aroma) => {
+    const stockMaximo = producto.variantesStock[aroma] || 0;
+    const enCarrito = carrito.find(item => item.nombre === producto.nombre && item.aroma === aroma);
+    const cantidadEnCarrito = enCarrito ? enCarrito.cantidad : 0;
+    return stockMaximo - cantidadEnCarrito;
+  };
+
+  const agregarAlCarrito = (producto, aromaSeleccionado, esStockInmediato = false) => {
+    if (esStockInmediato) {
+      const disponible = obtenerStockDisponibleReal(producto, aromaSeleccionado);
+      if (disponible <= 0) {
+        alert("¡Ups! No podés agregar más unidades de este aroma porque agotarías el stock disponible.");
+        return;
+      }
+    }
+
     setCarrito((prev) => {
-      // Validar si ya existe el mismo producto con el mismo aroma
       const existe = prev.find(item => item.nombre === producto.nombre && item.aroma === aromaSeleccionado);
       if (existe) {
         return prev.map(item => 
@@ -48,16 +64,27 @@ export default function GarugaLanding() {
             : item
         );
       }
-      return [...prev, { ...producto, aroma: aromaSeleccionado, cantidad: 1 }];
+      return [...prev, { ...producto, aroma: aromaSeleccionado, cantidad: 1, esStockInmediato }];
     });
-    setCarritoAbierto(true); // Abre el carrito para mostrar el feedback visual
+    setCarritoAbierto(true);
   };
 
   const actualizarCantidad = (index, valor) => {
     setCarrito((prev) => {
       const nuevo = [...prev];
-      nuevo[index].cantidad += valor;
-      if (nuevo[index].cantidad <= 0) {
+      const item = nuevo[index];
+      
+      // Si es del stock inmediato, validar que al sumar no pase el límite real
+      if (valor > 0 && item.esStockInmediato) {
+        const stockMaximo = item.variantesStock[item.aroma] || 0;
+        if (item.cantidad + valor > stockMaximo) {
+          alert(`Lo sentimos, solo nos quedan ${stockMaximo} unidades de este aroma.`);
+          return prev;
+        }
+      }
+
+      item.cantidad += valor;
+      if (item.cantidad <= 0) {
         nuevo.splice(index, 1);
       }
       return nuevo;
@@ -95,7 +122,6 @@ export default function GarugaLanding() {
       >
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 20px", display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
           
-          {/* Botón Carrito Flotante en el Header */}
           <button 
             onClick={() => setCarritoAbierto(true)}
             style={{ position: "absolute", right: "30px", top: "35px", background: "none", border: "none", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
@@ -162,8 +188,12 @@ export default function GarugaLanding() {
                 
                 {categoriaActual === "stock disponible" ? (
                   <div style={{ marginBottom: "20px", padding: "12px", backgroundColor: "#fffaf0", border: "1px solid #f3e5ab" }}>
-                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", color: "#b8860b" }}>Disponible en:</p>
-                    <p style={{ fontSize: "13px", fontStyle: "italic" }}>{prod.variantesStock.join(", ")}</p>
+                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", color: "#b8860b" }}>Stock Inmediato:</p>
+                    {Object.entries(prod.variantesStock).map(([aroma, cant]) => (
+                      <p key={aroma} style={{ fontSize: "13px", fontStyle: "italic", margin: "4px 0" }}>
+                        {aroma}: <strong>{cant} unidades</strong> disponibles
+                      </p>
+                    ))}
                   </div>
                 ) : (
                   <p style={{ fontSize: "12px", color: "#999", marginBottom: "22px", fontStyle: "italic" }}>{prod.desc}</p>
@@ -172,63 +202,67 @@ export default function GarugaLanding() {
                 <p style={{ fontSize: "18px", marginBottom: "25px", color: "#333" }}>{prod.precio}</p>
               </div>
 
-              {/* Botón dinámico de compra */}
+              {/* LÓGICA DE BOTONES INTELIGENTES */}
               {categoriaActual === "stock disponible" ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {prod.variantesStock.map(aroma => (
-                    <button 
-                      key={aroma}
-                      onClick={() => agregarAlCarrito(prod, aroma)}
-                      style={{ width: "100%", padding: "12px 0", border: "1px solid #4b3f35", backgroundColor: "transparent", fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}
-                    >
-                      Agregar Aroma: {aroma} 👜
-                    </button>
-                  ))}
+                  {Object.keys(prod.variantesStock).map(aroma => {
+                    const restante = obtenerStockDisponibleReal(prod, aroma);
+                    const sinStock = restante <= 0;
+                    
+                    return (
+                      <button 
+                        key={aroma}
+                        disabled={sinStock}
+                        onClick={() => agregarAlCarrito(prod, aroma, true)}
+                        style={{ 
+                          width: "100%", padding: "12px 0", 
+                          border: "1px solid #4b3f35", 
+                          backgroundColor: sinStock ? "#eee" : "transparent", 
+                          color: sinStock ? "#999" : "#4b3f35",
+                          fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", 
+                          cursor: sinStock ? "not-allowed" : "pointer", fontFamily: 'serif' 
+                        }}
+                      >
+                        {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) 👜`}
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
-                <button 
-                  onClick={() => agregarAlCarrito(prod, "A elección")}
-                  style={{ width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}
+                // Pestaña normal: a pedido, directo a WhatsApp para personalizar
+                <a 
+                  href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre} con esencia a elección.`}
+                  target="_blank" rel="noreferrer"
+                  style={{ display: "inline-block", width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", fontFamily: 'serif' }}
                 >
-                  Agregar al carrito 👜
-                </button>
+                  Encargar por WhatsApp 💬
+                </a>
               )}
             </motion.div>
           ))}
         </div>
       </main>
 
-      {/* COMPONENTE INTERFAZ DEL CARRITO (DRAWER SIDEBAR) */}
+      {/* INTERFAZ DEL CARRITO */}
       <AnimatePresence>
         {carritoAbierto && (
           <>
-            {/* Fondo oscuro */}
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setCarritoAbierto(false)}
-              style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.4)", zIndex: 100, backdropFilter: "blur(3px)" }}
-            />
-            {/* Panel lateral */}
-            <motion.div 
-              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.35 }}
-              style={{ position: "fixed", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: "450px", backgroundColor: "#fff", zIndex: 101, boxShadow: "-10px 0 30px rgba(0,0,0,0.05)", padding: "40px 30px", display: "flex", flexDirection: "column" }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setCarritoAbierto(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.4)", zIndex: 100, backdropFilter: "blur(3px)" }} />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "tween", duration: 0.35 }} style={{ position: "fixed", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: "450px", backgroundColor: "#fff", zIndex: 101, boxShadow: "-10px 0 30px rgba(0,0,0,0.05)", padding: "40px 30px", display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee", paddingBottom: "20px", marginBottom: "20px" }}>
-                <h3 style={{ fontSize: "16px", uppercase: "true", letterSpacing: "0.2em", margin: 0 }}>Tu Carrito</h3>
+                <h3 style={{ fontSize: "16px", letterSpacing: "0.2em", margin: 0 }}>Tu Carrito</h3>
                 <button onClick={() => setCarritoAbierto(false)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>✕</button>
               </div>
 
-              {/* Lista de productos en carrito */}
               <div style={{ flex: 1, overflowY: "auto" }}>
                 {carrito.length === 0 ? (
                   <p style={{ textAlign: "center", color: "#888", fontStyle: "italic", marginTop: "40px" }}>Tu carrito está vacío.</p>
                 ) : (
                   carrito.map((item, index) => (
                     <div key={index} style={{ display: "flex", gap: "15px", marginBottom: "25px", borderBottom: "1px solid #fbfbfb", paddingBottom: "15px", alignItems: "center" }}>
-                      <img src={item.img} alt={item.nombre} style={{ width: "70px", height: "90px", objectFit: "cover", borderRadius: "2px" }} />
+                      <img src={item.img} alt={item.nombre} style={{ width: "70px", height: "90px", objectFit: "cover" }} />
                       <div style={{ flex: 1 }}>
-                        <h4 style={{ fontSize: "13px", margin: "0 0 5px 0", textTransform: "uppercase", letterSpacing: "0.1em" }}>{item.nombre}</h4>
+                        <h4 style={{ fontSize: "13px", margin: "0 0 5px 0", textTransform: "uppercase" }}>{item.nombre}</h4>
                         <p style={{ fontSize: "11px", color: "#888", margin: "0 0 10px 0", fontStyle: "italic" }}>Aroma: {item.aroma}</p>
                         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                           <div style={{ display: "flex", border: "1px solid #ddd", alignItems: "center" }}>
@@ -244,17 +278,13 @@ export default function GarugaLanding() {
                 )}
               </div>
 
-              {/* Checkout */}
               {carrito.length > 0 && (
                 <div style={{ borderTop: "1px solid #eee", paddingTop: "20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px" }}>
-                    <span style={{ fontSize: "14px", uppercase: "true", letterSpacing: "0.1em" }}>Total Estimado:</span>
+                    <span style={{ fontSize: "14px", letterSpacing: "0.1em" }}>Total:</span>
                     <span style={{ fontSize: "18px", fontWeight: "bold" }}>${calcularTotal()}</span>
                   </div>
-                  <button 
-                    onClick={finalizarCompraWhatsApp}
-                    style={{ width: "100%", padding: "16px 0", backgroundColor: "#4b3f35", color: "white", border: "none", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}
-                  >
+                  <button onClick={finalizarCompraWhatsApp} style={{ width: "100%", padding: "16px 0", backgroundColor: "#4b3f35", color: "white", border: "none", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}>
                     Iniciar Pedido por WhatsApp 🚀
                   </button>
                 </div>
@@ -267,11 +297,7 @@ export default function GarugaLanding() {
       {/* LIGHTBOX MODAL */}
       <AnimatePresence>
         {imagenModal && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", cursor: "zoom-out" }}
-            onClick={() => setImagenModal(null)}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", cursor: "zoom-out" }} onClick={() => setImagenModal(null)}>
             <motion.img src={imagenModal} initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", border: "2px solid white" }} />
           </motion.div>
         )}
