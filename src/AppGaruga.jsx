@@ -7,8 +7,10 @@ export default function GarugaLanding() {
   const [imagenModal, setImagenModal] = useState(null);
   const [hidden, setHidden] = useState(false);
   
+  // ESTADOS DE CARRITO Y ENVÍO
   const [carrito, setCarrito] = useState([]);
   const [carritoAbierto, setCarritoAbierto] = useState(false);
+  const [datosEnvio, setDatosEnvio] = useState({ cp: "", localidad: "", direccion: "" });
 
   const { scrollY } = useScroll();
   const productosRef = useRef(null);
@@ -29,7 +31,6 @@ export default function GarugaLanding() {
     }
   };
 
-  // Filtrar productos: ahora verifica si variantesStock tiene alguna clave con stock mayor a 0
   const productosFiltrados = productosData.filter(p => {
     if (categoriaActual === "todos") return true;
     if (categoriaActual === "stock disponible") {
@@ -38,7 +39,6 @@ export default function GarugaLanding() {
     return p.categoria === categoriaActual;
   });
 
-  // Helper para saber cuánto stock real queda disponible restando lo que ya está en el carrito
   const obtenerStockDisponibleReal = (producto, aroma) => {
     const stockMaximo = producto.variantesStock[aroma] || 0;
     const enCarrito = carrito.find(item => item.nombre === producto.nombre && item.aroma === aroma);
@@ -74,7 +74,6 @@ export default function GarugaLanding() {
       const nuevo = [...prev];
       const item = nuevo[index];
       
-      // Si es del stock inmediato, validar que al sumar no pase el límite real
       if (valor > 0 && item.esStockInmediato) {
         const stockMaximo = item.variantesStock[item.aroma] || 0;
         if (item.cantidad + valor > stockMaximo) {
@@ -98,13 +97,23 @@ export default function GarugaLanding() {
     }, 0);
   };
 
+  // FUNCIÓN DE WHATSAPP CON DATOS DE ENVÍO
   const finalizarCompraWhatsApp = () => {
+    if (!datosEnvio.cp || !datosEnvio.localidad) {
+      alert("Por favor, completá tu Código Postal y Localidad para que pueda calcularte el costo de envío.");
+      return;
+    }
+
     let mensaje = "Hola Garuga! Mi pedido es:\n\n";
     carrito.forEach(item => {
       mensaje += `• ${item.nombre} ${item.aroma ? `(${item.aroma})` : ''} x${item.cantidad} - ${item.precio}\n`;
     });
-    mensaje += `\n*Total: $${calcularTotal()}*\n\n`;
-    mensaje += "Me gustaría coordinar el pago y el envío a mi localidad. ✨";
+    mensaje += `\n*Total Productos: $${calcularTotal()}*\n\n`;
+    mensaje += `🚚 *DATOS DE ENVÍO:*\n`;
+    mensaje += `• C.P.: ${datosEnvio.cp}\n`;
+    mensaje += `• Localidad/Provincia: ${datosEnvio.localidad}\n`;
+    mensaje += `• Dirección: ${datosEnvio.direccion || "A coordinar por acá"}\n\n`;
+    mensaje += "Me gustaría coordinar el pago por transferencia y el costo de envío por Correo Argentino / Andreani. ✨";
     
     const url = `https://wa.me/5492236325321?text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank");
@@ -157,9 +166,7 @@ export default function GarugaLanding() {
       <section style={{ padding: "100px 20px 60px 20px", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "36px", marginBottom: "35px", fontWeight: "300", fontStyle: "italic", color: "#333" }}>¡Bienvenidos a Garuga!</h1>
         <p style={{ fontSize: "19px", color: "#555", lineHeight: "1.9", marginBottom: "25px", fontStyle: "italic" }}>
-          Velas de cera de soja aromáticas, difusores y perfuminas hechas con amor y buenas vibras
-           • Deco & Home 
-           • Souvenirs
+          "Velas de cera de soja aromáticas y perfuminas hechas con amor y buenas vibras. Envíos a todo el país."
         </p>
       </section>
 
@@ -204,7 +211,6 @@ export default function GarugaLanding() {
                 <p style={{ fontSize: "18px", marginBottom: "25px", color: "#333" }}>{prod.precio}</p>
               </div>
 
-              {/* LÓGICA DE BOTONES INTELIGENTES */}
               {categoriaActual === "stock disponible" ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {Object.keys(prod.variantesStock).map(aroma => {
@@ -231,7 +237,6 @@ export default function GarugaLanding() {
                   })}
                 </div>
               ) : (
-                // Pestaña normal: a pedido, directo a WhatsApp para personalizar
                 <a 
                   href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre} con esencia a elección.`}
                   target="_blank" rel="noreferrer"
@@ -245,7 +250,7 @@ export default function GarugaLanding() {
         </div>
       </main>
 
-      {/* INTERFAZ DEL CARRITO */}
+      {/* INTERFAZ DEL CARRITO CON FORMULARIO DE ENVÍO */}
       <AnimatePresence>
         {carritoAbierto && (
           <>
@@ -280,10 +285,36 @@ export default function GarugaLanding() {
                 )}
               </div>
 
+              {/* CHECKOUT CON INPUTS DE ENVÍO */}
               {carrito.length > 0 && (
                 <div style={{ borderTop: "1px solid #eee", paddingTop: "20px" }}>
+                  
+                  {/* Cajita estática para recolectar datos de correo */}
+                  <div style={{ marginBottom: "20px", backgroundColor: "#fdfaf7", padding: "15px", borderRadius: "4px", border: "1px dashed #ddd" }}>
+                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 0, marginBottom: "10px" }}>
+                      🚚 Datos para calcular Envío (Nacional)
+                    </p>
+                    <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+                      <input 
+                        type="text" placeholder="Cód. Postal" value={datosEnvio.cp} 
+                        onChange={(e) => setDatosEnvio({...datosEnvio, cp: e.target.value})}
+                        style={{ width: "35%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                      />
+                      <input 
+                        type="text" placeholder="Localidad / Prov." value={datosEnvio.localidad} 
+                        onChange={(e) => setDatosEnvio({...datosEnvio, localidad: e.target.value})}
+                        style={{ width: "65%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                      />
+                    </div>
+                    <input 
+                      type="text" placeholder="Dirección o Sucursal de preferencia" value={datosEnvio.direccion} 
+                      onChange={(e) => setDatosEnvio({...datosEnvio, direccion: e.target.value})}
+                      style={{ width: "100%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                    />
+                  </div>
+
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px" }}>
-                    <span style={{ fontSize: "14px", letterSpacing: "0.1em" }}>Total:</span>
+                    <span style={{ fontSize: "14px", letterSpacing: "0.1em" }}>Total Productos:</span>
                     <span style={{ fontSize: "18px", fontWeight: "bold" }}>${calcularTotal()}</span>
                   </div>
                   <button onClick={finalizarCompraWhatsApp} style={{ width: "100%", padding: "16px 0", backgroundColor: "#4b3f35", color: "white", border: "none", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}>
