@@ -158,8 +158,8 @@ export default function GarugaLanding() {
         <h1 style={{ fontSize: "36px", marginBottom: "35px", fontWeight: "300", fontStyle: "italic", color: "#333" }}>¡Bienvenidos a Garuga!</h1>
         <p style={{ fontSize: "19px", color: "#555", lineHeight: "1.9", marginBottom: "25px", fontStyle: "italic" }}>
           Velas de cera de soja aromáticas, difusores y perfuminas hechas con amor y buenas vibras
-          Deco & Home 
-          Souvenirs
+           • Deco & Home 
+           • Souvenirs
         </p>
       </section>
 
