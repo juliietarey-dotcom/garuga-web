@@ -52,7 +52,7 @@ export const productosData = [
     precio: "$10000", 
     desc: "Esencia a elección", 
     img: "/productos/cuenco.jpg", 
-    variantesStock: { "Coco": 1, "Bamboo": 1 } 
+    variantesStock: { "Coco": 1} 
   },
   { 
     categoria: "velas de soja", 
