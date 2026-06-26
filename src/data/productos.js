@@ -12,7 +12,7 @@ export const productosData = [
     precio: "$6000", 
     desc: "Esencia a elección", 
     img: "/productos/roma.jpg", 
-    variantesStock: { "Bamboo": 1, "Papaya": 1, "Pepino-Sandía": 1 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "velas de soja", 
@@ -28,7 +28,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Esencia a elección", 
     img: "/productos/amanecer.jpg", 
-    variantesStock: { "Vainilla": 1, "Limón": 1, "Papaya": 1 } 
+    variantesStock: {  "Limón": 1, "Papaya": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -36,7 +36,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Esencia a elección", 
     img: "/productos/hexagonal.jpg", 
-    variantesStock: { "Limón": 1, "Tilo-Jazmín": 1, "Papaya": 1 } 
+    variantesStock: { "Limón": 1, "Papaya": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -44,7 +44,7 @@ export const productosData = [
     precio: "$9500", 
     desc: "Esencia a elección", 
     img: "/productos/olivia.jpg", 
-    variantesStock: { "Coco": 1, "Vainilla": 1 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "velas de soja", 
@@ -52,7 +52,7 @@ export const productosData = [
     precio: "$10000", 
     desc: "Esencia a elección", 
     img: "/productos/cuenco.jpg", 
-    variantesStock: { "Coco": 1} 
+    variantesStock: { } 
   },
   { 
     categoria: "velas de soja", 
@@ -68,7 +68,7 @@ export const productosData = [
     precio: "$12500", 
     desc: "Esencia a elección", 
     img: "/productos/rune.jpg", 
-    variantesStock: { "Coco": 1, "Vainilla": 1, "Bamboo": 1, "Pepino-Sandía": 1 } 
+    variantesStock: {  "Vainilla": 1, "Bamboo": 1 } 
   },
   
   // --- DIFUSORES ---
@@ -78,7 +78,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/ambar.jpg", 
-    variantesStock: { "Limón": 1, "Pepino-Sandía": 1, "Cuero y Madera": 1 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "difusores", 
@@ -86,7 +86,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/cristal.jpg", 
-    variantesStock: { "Limón": 1, "Papaya": 1, "Pepino-Sandía": 1 } 
+    variantesStock: { "Limón": 1 } 
   },
 
   // --- PERFUMINAS ---
