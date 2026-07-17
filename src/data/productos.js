@@ -25,7 +25,7 @@ export const productosData = [
     precio: "$6000", 
     desc: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Regalá un momento creativo!", 
     img: "/productos/combo1.png", 
-    variantesStock: { "Kit Yeso": 3 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "dia del amigo", 
@@ -33,7 +33,7 @@ export const productosData = [
     precio: "$6000", 
     desc: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y estético.", 
     img: "/productos/combo2.png", 
-    variantesStock: { "Kit Yeso": 3 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "dia del amigo", 
@@ -41,7 +41,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.", 
     img: "/productos/combo3.png", 
-    variantesStock: { "Kit Yeso": 3 } 
+    variantesStock: {  } 
   },
   { 
     categoria: "dia del amigo", 
