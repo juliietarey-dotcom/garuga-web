@@ -239,7 +239,7 @@ export default function GarugaLanding() {
                 </div>
               ) : (
                 <a 
-                  href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre} con esencia a elección.`}
+                  href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre}.`}
                   target="_blank" rel="noreferrer"
                   style={{ display: "inline-block", width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", fontFamily: 'serif' }}
                 >
