@@ -74,7 +74,7 @@ export default function GarugaLanding() {
       const nuevo = [...prev];
       const item = nuevo[index];
       
-      if (valor > 0 && item.esStockInmediate) {
+      if (valor > 0 && item.esStockInmediato) {
         const stockMaximo = item.variantesStock[item.aroma] || 0;
         if (item.cantidad + valor > stockMaximo) {
           alert(`Lo sentimos, solo nos quedan ${stockMaximo} unidades de este aroma.`);
@@ -250,70 +250,94 @@ export default function GarugaLanding() {
         </div>
       </main>
 
-      {/* CARRITO ABIERTO */}
+      {/* CARRITO ABIERTO (DISEÑO FIJO Y COMPACTO) */}
       <AnimatePresence>
         {carritoAbierto && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100, display: "flex", justifyContent: "flex-end" }}>
-            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} style={{ width: "100%", maxWidth: "450px", backgroundColor: "#fff", height: "100vh", padding: "40px 30px", overflowY: "auto", display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
-                <h2 style={{ fontSize: "20px", textTransform: "uppercase", letterSpacing: "0.15em" }}>Tu Carrito</h2>
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} style={{ width: "100%", maxWidth: "450px", backgroundColor: "#fff", height: "100vh", padding: "30px 25px", display: "flex", flexDirection: "column", boxSizing: "border-box" }}>
+              
+              {/* HEADER DEL CARRITO */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h2 style={{ fontSize: "18px", textTransform: "uppercase", letterSpacing: "0.15em", margin: 0 }}>Tu Carrito</h2>
                 <button onClick={() => setCarritoAbierto(false)} style={{ background: "none", border: "none", fontSize: "24px", cursor: "pointer" }}>✕</button>
               </div>
 
               {carrito.length === 0 ? (
                 <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "100px" }}>El carrito está vacío.</p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "space-between" }}>
-                  <div style={{ overflowY: "auto", flexGrow: 1, marginBottom: "20px" }}>
+                <div style={{ display: "flex", flexDirection: "column", height: "calc(100% - 40px)", justifyContent: "space-between" }}>
+                  
+                  {/* LISTADO DE PRODUCTOS (SCROLLABLE INDEPENDIENTE) */}
+                  <div style={{ overflowY: "auto", flexGrow: 1, paddingRight: "5px", marginBottom: "15px" }}>
                     {carrito.map((item, index) => (
-                      <div key={index} style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", paddingBottom: "20px", borderBottom: "1px solid #eee" }}>
+                      <div key={index} style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", paddingBottom: "15px", borderBottom: "1px solid #eee" }}>
                         <div>
-                          <h4 style={{ fontSize: "14px", textTransform: "uppercase", margin: "0 0 5px 0" }}>{item.nombre}</h4>
-                          <p style={{ fontSize: "12px", fontStyle: "italic", color: "#888", margin: 0 }}>Aroma: {item.aroma}</p>
-                          <p style={{ fontSize: "13px", margin: "5px 0 0 0" }}>{item.precio}</p>
+                          <h4 style={{ fontSize: "13px", textTransform: "uppercase", margin: "0 0 5px 0" }}>{item.nombre}</h4>
+                          <p style={{ fontSize: "11px", fontStyle: "italic", color: "#888", margin: 0 }}>Aroma: {item.aroma}</p>
+                          <p style={{ fontSize: "12px", margin: "5px 0 0 0", fontWeight: "bold" }}>{item.precio}</p>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <button onClick={() => actualizarCantidad(index, -1)} style={{ background: "none", border: "1px solid #ddd", width: "24px", height: "24px", cursor: "pointer" }}>-</button>
-                          <span style={{ fontSize: "14px" }}>{item.cantidad}</span>
+                          <span style={{ fontSize: "13px" }}>{item.cantidad}</span>
                           <button onClick={() => actualizarCantidad(index, 1)} style={{ background: "none", border: "1px solid #ddd", width: "24px", height: "24px", cursor: "pointer" }}>+</button>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <div style={{ borderTop: "1px solid #eee", paddingTop: "20px" }}>
-                    {/* Formulario de Envío Estético */}
-                    <div style={{ marginBottom: "20px", backgroundColor: "#fdfaf7", padding: "15px", borderRadius: "4px", border: "1px dashed #ddd" }}>
-                      <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 0, marginBottom: "10px" }}>
+                  {/* FOOTER DEL CARRITO (FORMULARIO, TOTAL Y BOTÓN SIEMPRE VISIBLES ABAJO) */}
+                  <div style={{ borderTop: "1px solid #eee", paddingTop: "15px", backgroundColor: "#fff" }}>
+                    
+                    {/* Formulario de Envío */}
+                    <div style={{ marginBottom: "15px", backgroundColor: "#fdfaf7", padding: "12px", borderRadius: "4px", border: "1px dashed #ddd" }}>
+                      <p style={{ fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 0, marginBottom: "8px" }}>
                         🚚 Envío a toda Argentina
                       </p>
-                      <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+                      <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
                         <input 
                           type="text" placeholder="Cód. Postal" value={datosEnvio.cp} 
                           onChange={(e) => setDatosEnvio({...datosEnvio, cp: e.target.value})}
-                          style={{ width: "35%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                          style={{ width: "35%", padding: "8px", border: "1px solid #ddd", fontSize: "11px", fontFamily: "sans-serif", boxSizing: "border-box" }}
                         />
                         <input 
                           type="text" placeholder="Localidad / Prov." value={datosEnvio.localidad} 
                           onChange={(e) => setDatosEnvio({...datosEnvio, localidad: e.target.value})}
-                          style={{ width: "65%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                          style={{ width: "65%", padding: "8px", border: "1px solid #ddd", fontSize: "11px", fontFamily: "sans-serif", boxSizing: "border-box" }}
                         />
                       </div>
                       <input 
                         type="text" placeholder="Dirección (Calle y Altura) - Opcional" value={datosEnvio.direccion} 
                         onChange={(e) => setDatosEnvio({...datosEnvio, direccion: e.target.value})}
-                        style={{ width: "100%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
+                        style={{ width: "100%", padding: "8px", border: "1px solid #ddd", fontSize: "11px", fontFamily: "sans-serif", boxSizing: "border-box" }}
                       />
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px" }}>
-                      <span style={{ fontSize: "14px", letterSpacing: "0.1em" }}>Total:</span>
+                    {/* Total y Botón de WhatsApp */}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", alignItems: "center" }}>
+                      <span style={{ fontSize: "13px", letterSpacing: "0.1em", textTransform: "uppercase" }}>Total:</span>
                       <span style={{ fontSize: "18px", fontWeight: "bold" }}>${calcularTotal().toLocaleString("es-AR")}</span>
                     </div>
-                    <button onClick={finalizarCompraWhatsApp} style={{ width: "100%", padding: "16px 0", backgroundColor: "#4b3f35", color: "white", border: "none", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}>
+                    
+                    <button 
+                      onClick={finalizarCompraWhatsApp} 
+                      style={{ 
+                        width: "100%", 
+                        padding: "14px 0", 
+                        backgroundColor: "#4b3f35", 
+                        color: "white", 
+                        border: "none", 
+                        fontSize: "11px", 
+                        letterSpacing: "0.2em", 
+                        textTransform: "uppercase", 
+                        cursor: "pointer", 
+                        fontFamily: 'serif',
+                        fontWeight: "bold"
+                      }}
+                    >
                       Iniciar Pedido por WhatsApp 🚀
                     </button>
                   </div>
+
                 </div>
               )}
             </motion.div>
