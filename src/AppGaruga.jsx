@@ -165,7 +165,8 @@ export default function GarugaLanding() {
       <section style={{ padding: "100px 20px 60px 20px", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "36px", marginBottom: "35px", fontWeight: "300", fontStyle: "italic", color: "#333" }}>¡Bienvenidos a Garuga!</h1>
         <p style={{ fontSize: "19px", color: "#555", lineHeight: "1.9", marginBottom: "25px", fontStyle: "italic" }}>
-          "Velas de cera de soja aromáticas y perfuminas hechas con amor y buenas vibras. Envíos a todo el país."
+          Velas de cera de soja aromáticas, difusores y perfuminas hechas con amor y buenas vibras. Envíos a todo el país.
+      
         </p>
       </section>
 
