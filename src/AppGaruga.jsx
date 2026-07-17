@@ -1,340 +1,430 @@
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { productosData, esenciasGlobales } from "./data/productos"; 
+// src/AppGaruga.jsx
+import React, { useState } from 'react';
 
-export default function GarugaLanding() {
-  const [categoriaActual, setCategoriaActual] = useState("todos");
-  const [imagenModal, setImagenModal] = useState(null);
-  const [hidden, setHidden] = useState(false);
-  
-  // ESTADOS DE CARRITO Y ENVÍO
-  const [carrito, setCarrito] = useState([]);
-  const [carritoAbierto, setCarritoAbierto] = useState(false);
-  const [datosEnvio, setDatosEnvio] = useState({ cp: "", localidad: "", direccion: "" });
+// Datos de los productos (extendidos con la categoría especial Día del Amigo)
+const catalog = [
+  // --- COMBOS DÍA DEL AMIGO (NUEVOS) ---
+  {
+    id: "combo-1",
+    nombre: "Combo 1 - Kit Pintura Tray Chica",
+    precio: "$6.000",
+    categoria: "dia del amigo",
+    descripcion: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Ideal para regalar un momento creativo!",
+    imagen: "/productos/combo1.png", // Asegurate de guardar la imagen en tu carpeta public/productos con este nombre
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-2",
+    nombre: "Combo 2 - Kit Pintura Cuenco Flor",
+    precio: "$6.000",
+    categoria: "dia del amigo",
+    descripcion: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y súper estético.",
+    imagen: "/productos/combo2.png",
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-3",
+    nombre: "Combo 3 - Kit Pintura Tray Grande",
+    precio: "$8.000",
+    categoria: "dia del amigo",
+    descripcion: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.",
+    imagen: "/productos/combo3.png",
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-4",
+    nombre: "Vela Amistad & Difusor Especial",
+    precio: "$12.000",
+    categoria: "dia del amigo",
+    descripcion: "Vela de soja especial 'Amistad' con doble pabilo y esencia a elección ($12.000) o Difusor de vidrio ámbar con varillas y esencia a elección ($12.000). Coincidir en el tiempo, elegir acompañarse y construir una historia en común.",
+    imagen: "/productos/combo4.png",
+    aromas: ["Bamboo", "Vainilla", "Coco", "Papaya", "Tilo-Jazmín", "Pepino-Sandía", "Madera y Cuero"],
+    stockInmediato: false // Al ser con esencias a elección, requiere preparación
+  },
 
-  const { scrollY } = useScroll();
-  const productosRef = useRef(null);
+  // --- VELAS DE SOJA (CATÁLOGO ANTERIOR) ---
+  {
+    id: "roma",
+    nombre: "Vela Roma -- 100 cc",
+    precio: "$6.000",
+    categoria: "velas de soja",
+    descripcion: "Hecha a mano con cera de soja 100% natural en envase de vidrio.",
+    imagen: "/productos/roma.jpg",
+    aromas: ["Bamboo", "Papaya", "Pepino-Sandía"],
+    stockInmediato: true
+  },
+  {
+    id: "lata",
+    nombre: "Vela Lata -- 100 cc",
+    precio: "$7.500",
+    categoria: "velas de soja",
+    descripcion: "Contenedor de lata metálica con tapa integrada.",
+    imagen: "/productos/lata.jpg",
+    aromas: ["Limón", "Tilo-Jazmín"],
+    stockInmediato: true
+  },
+  {
+    id: "amanecer",
+    nombre: "Vela Amanecer -- 150 cc",
+    precio: "$8.000",
+    categoria: "velas de soja",
+    descripcion: "Envase intermedio con gran persistencia aromática.",
+    imagen: "/productos/amanecer.jpg",
+    aromas: ["Vainilla", "Limón", "Papaya"],
+    stockInmediato: true
+  },
+  {
+    id: "hexagonal",
+    nombre: "Vela Hexagonal -- 150 cc",
+    precio: "$8.000",
+    categoria: "velas de soja",
+    descripcion: "Frasco de vidrio geométrico elegante.",
+    imagen: "/productos/hexagonal.jpg",
+    aromas: ["Limón", "Tilo-Jazmín", "Papaya"],
+    stockInmediato: true
+  },
+  {
+    id: "olivia",
+    nombre: "Vela Olivia -- 180 cc",
+    precio: "$9.500",
+    categoria: "velas de soja",
+    descripcion: "Frasco premium con tapa de madera o corcho protector.",
+    imagen: "/productos/olivia.jpg",
+    aromas: ["Coco", "Vainilla"],
+    stockInmediato: true
+  },
+  {
+    id: "cuenco",
+    nombre: "Vela Cuenco de madera -- 100 cc",
+    precio: "$10.000",
+    categoria: "velas de soja",
+    descripcion: "Estilo rústico, cuenco torneado ideal para decoración.",
+    imagen: "/productos/cuenco.jpg",
+    aromas: ["Coco", "Bamboo"],
+    stockInmediato: true
+  },
+  {
+    id: "caramelera",
+    nombre: "Vela Caramelera -- 80 cc",
+    precio: "$11.000",
+    categoria: "velas de soja",
+    descripcion: "Vidrio labrado delicado, objeto de diseño y distinción.",
+    imagen: "/productos/caramelera.jpg",
+    aromas: ["A pedido / Personalizado"],
+    stockInmediato: false
+  },
+  {
+    id: "rune",
+    nombre: "Vela Rune -- 200 cc",
+    precio: "$12.500",
+    categoria: "velas de soja",
+    descripcion: "La más grande del taller, doble pabilo para máxima intensidad.",
+    imagen: "/productos/rune.jpg",
+    aromas: ["Coco", "Vainilla", "Bamboo", "Pepino-Sandía"],
+    stockInmediato: true
+  },
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious();
-    if (latest > previous && latest > 150) {
-      setHidden(true);
+  // --- DIFUSORES (CATÁLOGO ANTERIOR) ---
+  {
+    id: "difusor-ambar",
+    nombre: "Difusor Ámbar 125 ml",
+    precio: "$12.000",
+    categoria: "difusores",
+    descripcion: "Envase ámbar protector con varillas de bambú.",
+    imagen: "/productos/ambar.jpg",
+    aromas: ["Limón", "Pepino-Sandía", "Cuero y Madera"],
+    stockInmediato: true
+  },
+  {
+    id: "difusor-cristal",
+    nombre: "Difusor Cristal 125 ml",
+    precio: "$12.000",
+    categoria: "difusores",
+    descripcion: "Envase minimalista transparente con varillas de alta absorción.",
+    imagen: "/productos/cristal.jpg",
+    aromas: ["Limón", "Papaya", "Pepino-Sandía"],
+    stockInmediato: true
+  },
+
+  // --- PERFUMINAS ---
+  {
+    id: "perfumina-250",
+    nombre: "Perfumina 250 ml",
+    precio: "$12.000",
+    categoria: "perfuminas",
+    descripcion: "Home spray de alta concentración para textiles y ambientes.",
+    imagen: "/productos/perfumina250.jpg",
+    aromas: ["A pedido / Personalizado"],
+    stockInmediato: false
+  },
+  {
+    id: "perfumina-500",
+    nombre: "Perfumina 500 ml",
+    precio: "$20.000",
+    categoria: "perfuminas",
+    descripcion: "Presentación familiar para mantener la frescura de tu hogar.",
+    imagen: "/productos/perfumina500.jpg",
+    aromas: ["A pedido / Personalizado"],
+    stockInmediato: false
+  }
+];
+
+export default function AppGaruga() {
+  const [cart, setCart] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("dia del amigo"); // Arranca por defecto mostrando la sección del día del amigo!
+  const [aromaSelections, setAromaSelections] = useState({});
+  const [deliveryInfo, setDeliveryInfo] = useState({ cp: '', localidad: '', direccion: '' });
+
+  const categories = [
+    { id: "dia del amigo", label: "🎁 Día del Amigo" },
+    { id: "velas de soja", label: "🕯️ Velas de Soja" },
+    { id: "difusores", label: "✨ Difusores" },
+    { id: "perfuminas", label: "🌸 Perfuminas" }
+  ];
+
+  // Filtra los productos según la categoría seleccionada
+  const filteredProducts = catalog.filter(p => p.categoria === selectedCategory);
+
+  const handleAromaChange = (productId, aroma) => {
+    setAromaSelections(prev => ({ ...prev, [productId]: aroma }));
+  };
+
+  const addToCart = (product) => {
+    const selectedAroma = aromaSelections[product.id] || product.aromas[0];
+    
+    // Verificamos si ya existe el mismo producto con el mismo aroma en el carrito
+    const existingIndex = cart.findIndex(item => item.id === product.id && item.aroma === selectedAroma);
+
+    if (existingIndex > -1) {
+      const newCart = [...cart];
+      newCart[existingIndex].cantidad += 1;
+      setCart(newCart);
     } else {
-      setHidden(false);
+      setCart(prev => [...prev, {
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        aroma: selectedAroma,
+        cantidad: 1
+      }]);
     }
-  });
+  };
 
-  const seleccionarCategoria = (cat) => {
-    setCategoriaActual(cat);
-    if (productosRef.current) {
-      productosRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  const updateQuantity = (index, delta) => {
+    const newCart = [...cart];
+    newCart[index].cantidad += delta;
+    if (newCart[index].cantidad <= 0) {
+      newCart.splice(index, 1);
     }
+    setCart(newCart);
   };
 
-  const productosFiltrados = productosData.filter(p => {
-    if (categoriaActual === "todos") return true;
-    if (categoriaActual === "stock disponible") {
-      return p.variantesStock && Object.keys(p.variantesStock).length > 0;
-    }
-    return p.categoria === categoriaActual;
-  });
-
-  const obtenerStockDisponibleReal = (producto, aroma) => {
-    const stockMaximo = producto.variantesStock[aroma] || 0;
-    const enCarrito = carrito.find(item => item.nombre === producto.nombre && item.aroma === aroma);
-    const cantidadEnCarrito = enCarrito ? enCarrito.cantidad : 0;
-    return stockMaximo - cantidadEnCarrito;
-  };
-
-  const agregarAlCarrito = (producto, aromaSeleccionado, esStockInmediato = false) => {
-    if (esStockInmediato) {
-      const disponible = obtenerStockDisponibleReal(producto, aromaSeleccionado);
-      if (disponible <= 0) {
-        alert("¡Ups! No podés agregar más unidades de este aroma porque agotarías el stock disponible.");
-        return;
-      }
-    }
-
-    setCarrito((prev) => {
-      const existe = prev.find(item => item.nombre === producto.nombre && item.aroma === aromaSeleccionado);
-      if (existe) {
-        return prev.map(item => 
-          (item.nombre === producto.nombre && item.aroma === aromaSeleccionado) 
-            ? { ...item, cantidad: item.cantidad + 1 } 
-            : item
-        );
-      }
-      return [...prev, { ...producto, aroma: aromaSeleccionado, cantidad: 1, esStockInmediato }];
-    });
-    setCarritoAbierto(true);
-  };
-
-  const actualizarCantidad = (index, valor) => {
-    setCarrito((prev) => {
-      const nuevo = [...prev];
-      const item = nuevo[index];
-      
-      if (valor > 0 && item.esStockInmediato) {
-        const stockMaximo = item.variantesStock[item.aroma] || 0;
-        if (item.cantidad + valor > stockMaximo) {
-          alert(`Lo sentimos, solo nos quedan ${stockMaximo} unidades de este aroma.`);
-          return prev;
-        }
-      }
-
-      item.cantidad += valor;
-      if (item.cantidad <= 0) {
-        nuevo.splice(index, 1);
-      }
-      return nuevo;
-    });
-  };
-
-  const calcularTotal = () => {
-    return carrito.reduce((total, item) => {
-      const precioNum = parseInt(item.precio.replace("$", ""));
-      return total + (precioNum * item.cantidad);
-    }, 0);
-  };
-
-  // FUNCIÓN DE WHATSAPP CON DATOS DE ENVÍO
-  const finalizarCompraWhatsApp = () => {
-    if (!datosEnvio.cp || !datosEnvio.localidad) {
-      alert("Por favor, completá tu Código Postal y Localidad para que pueda calcularte el costo de envío.");
+  // Esta es tu función de pago integrada con Mercado Pago de forma 100% segura que armamos antes
+  const iniciarPagoMercadoPago = async () => {
+    if (!deliveryInfo.cp || !deliveryInfo.localidad) {
+      alert("Por favor, completá tu Código Postal y Localidad para calcular el envío.");
       return;
     }
 
-    let mensaje = "Hola Garuga! Mi pedido es:\n\n";
-    carrito.forEach(item => {
-      mensaje += `• ${item.nombre} ${item.aroma ? `(${item.aroma})` : ''} x${item.cantidad} - ${item.precio}\n`;
+    try {
+      const respuesta = await fetch('/api/crear-preferencia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ carrito: cart, datosEnvio: deliveryInfo })
+      });
+
+      const data = await respuesta.json();
+
+      if (data.id) {
+        window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${data.id}`;
+      } else {
+        alert("Hubo un problema al conectar con Mercado Pago. Intentá de nuevo.");
+      }
+    } catch (error) {
+      console.error("Error en el flujo de pago:", error);
+      alert("Error de conexión con el servidor de cobros.");
+    }
+  };
+
+  // Alternativa simple por WhatsApp por si el backend está en desarrollo o prefieren transferencia
+  const enviarPorWhatsApp = () => {
+    if (cart.length === 0) return;
+    let mensaje = "Hola Garuga! 🕯️ Quiero hacer el siguiente pedido:\n\n";
+    cart.forEach(item => {
+      mensaje += `- ${item.nombre} (${item.aroma}) x${item.cantidad}\n`;
     });
-    mensaje += `\n*Total Productos: $${calcularTotal()}*\n\n`;
-    mensaje += `🚚 *DATOS DE ENVÍO:*\n`;
-    mensaje += `• C.P.: ${datosEnvio.cp}\n`;
-    mensaje += `• Localidad/Provincia: ${datosEnvio.localidad}\n`;
-    mensaje += `• Dirección: ${datosEnvio.direccion || "A coordinar por acá"}\n\n`;
-    mensaje += "Me gustaría coordinar el pago por transferencia y el costo de envío por Correo Argentino / Andreani. ✨";
+    mensaje += `\n📍 Envío a: CP ${deliveryInfo.cp}, ${deliveryInfo.localidad}, ${deliveryInfo.direccion || 'Retiro en sucursal'}`;
     
-    const url = `https://wa.me/5492236325321?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, "_blank");
+    window.open(`https://wa.me/5492236325321?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
 
   return (
-    <div style={{ backgroundColor: "#fdfaf7", minHeight: "100vh", color: "#4b3f35", fontFamily: 'serif', paddingBottom: "100px" }}>
+    <div style={{ backgroundColor: '#FAF6F0', color: '#4B3F35', fontFamily: 'Segoe UI, sans-serif', minHeight: '100vh', padding: '20px' }}>
       
-      {/* HEADER INTELIGENTE */}
-      <motion.header 
-        variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
-        animate={hidden ? "hidden" : "visible"}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
-        style={{ borderBottom: "1px solid #eee", position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.92)", zIndex: 40, backdropFilter: "blur(10px)" }}
-      >
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 20px", display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
-          
-          <button 
-            onClick={() => setCarritoAbierto(true)}
-            style={{ position: "absolute", right: "30px", top: "35px", background: "none", border: "none", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            👜 <span style={{ fontSize: "12px", fontFamily: "sans-serif", backgroundColor: "#4b3f35", color: "white", borderRadius: "50%", padding: "2px 6px" }}>{carrito.reduce((a, b) => a + b.cantidad, 0)}</span>
-          </button>
+      {/* HEADER DE LA TIENDA */}
+      <header style={{ textAlign: 'center', margin: '40px 0' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', letterSpacing: '2px', margin: '0 0 10px 0' }}>GARUGA</h1>
+        <p style={{ fontStyle: 'italic', fontSize: '1.1rem', color: '#7c6a59' }}>Aromas que transforman tus rincones favoritos</p>
+      </header>
 
-          <img 
-            src="/logo.png" 
-            alt="GARUGA" 
-            style={{ width: "140px", marginBottom: "25px", cursor: "pointer" }}
-            onClick={() => seleccionarCategoria("todos")}
-          />
-
-          <nav style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "30px" }}>
-            {["todos", "stock disponible", "velas de soja", "perfuminas", "difusores"].map((cat) => (
-              <button 
-                key={cat} 
-                onClick={() => seleccionarCategoria(cat)} 
-                style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: "5px 0", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", color: categoriaActual === cat ? "#000" : "#888", fontWeight: categoriaActual === cat ? "bold" : "normal", transition: "color 0.3s ease", fontFamily: 'serif' }}
-              >
-                {cat === "stock disponible" ? "✨ " + cat : cat}
-                {categoriaActual === cat && (
-                  <motion.div layoutId="underline" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "1px", backgroundColor: "#000" }} />
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </motion.header>
-
-      {/* PRESENTACIÓN */}
-      <section style={{ padding: "100px 20px 60px 20px", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
-        <h1 style={{ fontSize: "36px", marginBottom: "35px", fontWeight: "300", fontStyle: "italic", color: "#333" }}>¡Bienvenidos a Garuga!</h1>
-        <p style={{ fontSize: "19px", color: "#555", lineHeight: "1.9", marginBottom: "25px", fontStyle: "italic" }}>
-          "Velas de cera de soja aromáticas y perfuminas hechas con amor y buenas vibras. Envíos a todo el país."
+      {/* BANNER DE BIENVENIDA & INFORMACIÓN DE ENVÍO */}
+      <div style={{ maxWidth: '800px', margin: '0 auto 40px auto', padding: '20px', border: '1px solid #E3D5CA', borderRadius: '8px', backgroundColor: '#fff' }}>
+        <h3 style={{ marginTop: 0, fontWeight: 'bold' }}>¡Bienvenidos a Garuga! 🕯️</h3>
+        <p>Creamos velas de cera de soja y aromas pensados para abrazar tus ambientes cotidianos.</p>
+        <hr style={{ border: '0', borderTop: '1px solid #E3D5CA', margin: '15px 0' }} />
+        <p style={{ fontSize: '0.95rem' }}>
+          🎁 <strong>ESPECIAL DÍA DEL AMIGO:</strong> ¡Lanzamos nuestros combos interactivos! Pintá tu propia bandeja o cuenco de yeso en casa y regalá un momento súper especial y duradero.
         </p>
-      </section>
-
-      {/* GUÍA DE AROMAS */}
-      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 20px 80px 20px" }}>
-        <div style={{ backgroundColor: "#f9f4ef", padding: "40px", textAlign: "center", borderRadius: "8px", border: "1px solid #eee" }}>
-          <h3 style={{ fontSize: "11px", letterSpacing: "0.45em", textTransform: "uppercase", marginBottom: "25px", opacity: 0.6 }}>Nuestras Esencias</h3>
-          <p style={{ maxWidth: "900px", margin: "0 auto", fontSize: "15px", fontStyle: "italic", opacity: 0.9, lineHeight: "1.8" }}>
-            {esenciasGlobales.join("  •  ")}
-          </p>
-        </div>
+        <p style={{ fontSize: '0.9rem', margin: '10px 0 0 0' }}>
+          ✨ <strong>Stock Inmediato:</strong> Despacho en 24/48 hs. <br />
+          🛠️ <strong>A pedido:</strong> Si elegís un producto personalizado, el proceso de fabricación manual demora 7 días hábiles.
+        </p>
       </div>
 
-      {/* GRILLA DE PRODUCTOS */}
-      <main ref={productosRef} style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "80px 50px" }}>
-          {productosFiltrados.map((prod, i) => (
-            <motion.div layout key={prod.nombre + i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "between" }}>
-              <div>
-                <div 
-                  style={{ aspectRatio: "3/4", overflow: "hidden", backgroundColor: "#f9f9f9", marginBottom: "28px", borderRadius: "2px", cursor: "pointer", border: "1px solid #f0f0f0" }}
-                  onClick={() => setImagenModal(prod.img)}
-                >
-                  <motion.img whileHover={{ scale: 1.05 }} src={prod.img} alt={prod.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
+      {/* CATEGORÍAS (NAVEGACIÓN) */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap', marginBottom: '40px' }}>
+        {categories.map(cat => (
+          <button
+            key={cat.id}
+            onClick={() => setSelectedCategory(cat.id)}
+            style={{
+              padding: '10px 20px',
+              border: selectedCategory === cat.id ? '2px solid #4B3F35' : '1px solid #E3D5CA',
+              borderRadius: '25px',
+              backgroundColor: selectedCategory === cat.id ? '#4B3F35' : '#fff',
+              color: selectedCategory === cat.id ? '#FAF6F0' : '#4B3F35',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* LISTADO DE PRODUCTOS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
+        {filteredProducts.map(product => {
+          const selectedAroma = aromaSelections[product.id] || product.aromas[0];
+          return (
+            <div key={product.id} style={{ backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #E3D5CA', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ height: '300px', backgroundColor: '#f0f0f0', overflow: 'hidden', position: 'relative' }}>
+                {/* Visualizador de la imagen del producto */}
+                <img 
+                  src={product.imagen} 
+                  alt={product.nombre} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=300&auto=format&fit=crop"; }} // Placeholder elegante si falta subir la foto
+                />
+                {!product.stockInmediato && (
+                  <span style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#E3D5CA', color: '#4B3F35', padding: '5px 10px', borderRadius: '15px', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                    A pedido (7 días)
+                  </span>
+                )}
+              </div>
+              <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '1.2rem', fontWeight: 'bold' }}>{product.nombre}</h4>
+                <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: '#666', lineHeight: '1.4', flexGrow: 1 }}>{product.descripcion}</p>
+                <span style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#4B3F35', marginBottom: '15px', display: 'block' }}>{product.precio}</span>
                 
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: "12px" }}>{prod.nombre}</h3>
-                
-                {categoriaActual === "stock disponible" ? (
-                  <div style={{ marginBottom: "20px", padding: "12px", backgroundColor: "#fffaf0", border: "1px solid #f3e5ab" }}>
-                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", color: "#b8860b" }}>Stock Inmediato:</p>
-                    {Object.entries(prod.variantesStock).map(([aroma, cant]) => (
-                      <p key={aroma} style={{ fontSize: "13px", fontStyle: "italic", margin: "4px 0" }}>
-                        {aroma}: <strong>{cant} unidades</strong> disponibles
-                      </p>
-                    ))}
+                {/* SELECTOR DE FRAGANCIAS */}
+                {product.aromas.length > 1 && (
+                  <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Elegí el Aroma:</label>
+                    <select 
+                      value={selectedAroma}
+                      onChange={(e) => handleAromaChange(product.id, e.target.value)}
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #E3D5CA', color: '#4B3F35', backgroundColor: '#FAF6F0', cursor: 'pointer' }}
+                    >
+                      {product.aromas.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
                   </div>
-                ) : (
-                  <p style={{ fontSize: "12px", color: "#999", marginBottom: "22px", fontStyle: "italic" }}>{prod.desc}</p>
                 )}
 
-                <p style={{ fontSize: "18px", marginBottom: "25px", color: "#333" }}>{prod.precio}</p>
-              </div>
-
-              {categoriaActual === "stock disponible" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {Object.keys(prod.variantesStock).map(aroma => {
-                    const restante = obtenerStockDisponibleReal(prod, aroma);
-                    const sinStock = restante <= 0;
-                    
-                    return (
-                      <button 
-                        key={aroma}
-                        disabled={sinStock}
-                        onClick={() => agregarAlCarrito(prod, aroma, true)}
-                        style={{ 
-                          width: "100%", padding: "12px 0", 
-                          border: "1px solid #4b3f35", 
-                          backgroundColor: sinStock ? "#eee" : "transparent", 
-                          color: sinStock ? "#999" : "#4b3f35",
-                          fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", 
-                          cursor: sinStock ? "not-allowed" : "pointer", fontFamily: 'serif' 
-                        }}
-                      >
-                        {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) 👜`}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <a 
-                  href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre} con esencia a elección.`}
-                  target="_blank" rel="noreferrer"
-                  style={{ display: "inline-block", width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", fontFamily: 'serif' }}
+                <button 
+                  onClick={() => addToCart(product)}
+                  style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '8px', backgroundColor: '#4B3F35', color: '#FAF6F0', fontWeight: 'bold', cursor: 'pointer', transition: 'background-color 0.2s' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#655546'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#4B3F35'}
                 >
-                  Encargar por WhatsApp 💬
-                </a>
-              )}
-            </motion.div>
-          ))}
+                  Agregar al Carrito
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* CARRITO DE COMPRAS FLOTANTE / INFERIOR */}
+      {cart.length > 0 && (
+        <div style={{ maxWidth: '600px', margin: '50px auto 0 auto', padding: '25px', backgroundColor: '#fff', borderRadius: '12px', border: '2px solid #4B3F35', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ margin: '0 0 20px 0', borderBottom: '2px solid #E3D5CA', paddingBottom: '10px' }}>🛒 Tu Carrito de Compra</h3>
+          <div>
+            {cart.map((item, index) => (
+              <div key={`${item.id}-${item.aroma}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #FAF6F0' }}>
+                <div>
+                  <strong style={{ display: 'block' }}>{item.nombre}</strong>
+                  <span style={{ fontSize: '0.85rem', color: '#7c6a59' }}>Aroma: {item.aroma}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button onClick={() => updateQuantity(index, -1)} style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #E3D5CA', backgroundColor: '#FAF6F0', cursor: 'pointer' }}>-</button>
+                  <span style={{ fontWeight: 'bold' }}>{item.cantidad}</span>
+                  <button onClick={() => updateQuantity(index, 1)} style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #E3D5CA', backgroundColor: '#FAF6F0', cursor: 'pointer' }}>+</button>
+                  <span style={{ marginLeft: '15px', fontWeight: 'bold' }}>{item.precio}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* DATOS DE ENVÍO SEGUROS */}
+          <div style={{ marginTop: '25px', padding: '15px', backgroundColor: '#FAF6F0', borderRadius: '8px' }}>
+            <h4 style={{ margin: '0 0 10px 0', fontSize: '0.95rem' }}>📦 Datos para el Envío (Correo Argentino / Andreani)</h4>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+              <input 
+                type="text" 
+                placeholder="Código Postal" 
+                value={deliveryInfo.cp}
+                onChange={(e) => setDeliveryInfo(prev => ({ ...prev, cp: e.target.value }))}
+                style={{ width: '35%', padding: '8px', borderRadius: '6px', border: '1px solid #E3D5CA' }}
+              />
+              <input 
+                type="text" 
+                placeholder="Localidad" 
+                value={deliveryInfo.localidad}
+                onChange={(e) => setDeliveryInfo(prev => ({ ...prev, localidad: e.target.value }))}
+                style={{ width: '65%', padding: '8px', borderRadius: '6px', border: '1px solid #E3D5CA' }}
+              />
+            </div>
+            <input 
+              type="text" 
+              placeholder="Dirección (Calle, número, piso/depto)" 
+              value={deliveryInfo.direccion}
+              onChange={(e) => setDeliveryInfo(prev => ({ ...prev, direccion: e.target.value }))}
+              style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '6px', border: '1px solid #E3D5CA' }}
+            />
+          </div>
+
+          {/* BOTONES DE PAGO SEGUROS */}
+          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <button 
+              onClick={iniciarPagoMercadoPago}
+              style={{ width: '100%', padding: '15px', border: 'none', borderRadius: '8px', backgroundColor: '#009EE3', color: '#fff', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              💳 Pagar de forma segura con Mercado Pago
+            </button>
+            <button 
+              onClick={enviarPorWhatsApp}
+              style={{ width: '100%', padding: '12px', border: '1px solid #25D366', borderRadius: '8px', backgroundColor: '#fff', color: '#25D366', fontSize: '0.95rem', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              💬 Coordinar pedido y Transferencia por WhatsApp
+            </button>
+          </div>
         </div>
-      </main>
-
-      {/* INTERFAZ DEL CARRITO CON FORMULARIO DE ENVÍO */}
-      <AnimatePresence>
-        {carritoAbierto && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setCarritoAbierto(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.4)", zIndex: 100, backdropFilter: "blur(3px)" }} />
-            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "tween", duration: 0.35 }} style={{ position: "fixed", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: "450px", backgroundColor: "#fff", zIndex: 101, boxShadow: "-10px 0 30px rgba(0,0,0,0.05)", padding: "40px 30px", display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee", paddingBottom: "20px", marginBottom: "20px" }}>
-                <h3 style={{ fontSize: "16px", letterSpacing: "0.2em", margin: 0 }}>Tu Carrito</h3>
-                <button onClick={() => setCarritoAbierto(false)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>✕</button>
-              </div>
-
-              <div style={{ flex: 1, overflowY: "auto" }}>
-                {carrito.length === 0 ? (
-                  <p style={{ textAlign: "center", color: "#888", fontStyle: "italic", marginTop: "40px" }}>Tu carrito está vacío.</p>
-                ) : (
-                  carrito.map((item, index) => (
-                    <div key={index} style={{ display: "flex", gap: "15px", marginBottom: "25px", borderBottom: "1px solid #fbfbfb", paddingBottom: "15px", alignItems: "center" }}>
-                      <img src={item.img} alt={item.nombre} style={{ width: "70px", height: "90px", objectFit: "cover" }} />
-                      <div style={{ flex: 1 }}>
-                        <h4 style={{ fontSize: "13px", margin: "0 0 5px 0", textTransform: "uppercase" }}>{item.nombre}</h4>
-                        <p style={{ fontSize: "11px", color: "#888", margin: "0 0 10px 0", fontStyle: "italic" }}>Aroma: {item.aroma}</p>
-                        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                          <div style={{ display: "flex", border: "1px solid #ddd", alignItems: "center" }}>
-                            <button onClick={() => actualizarCantidad(index, -1)} style={{ padding: "4px 10px", background: "none", border: "none", cursor: "pointer" }}>-</button>
-                            <span style={{ fontSize: "12px", fontFamily: "sans-serif" }}>{item.cantidad}</span>
-                            <button onClick={() => actualizarCantidad(index, 1)} style={{ padding: "4px 10px", background: "none", border: "none", cursor: "pointer" }}>+</button>
-                          </div>
-                          <span style={{ fontSize: "13px", fontWeight: "bold" }}>{item.precio}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* CHECKOUT CON INPUTS DE ENVÍO */}
-              {carrito.length > 0 && (
-                <div style={{ borderTop: "1px solid #eee", paddingTop: "20px" }}>
-                  
-                  {/* Cajita estática para recolectar datos de correo */}
-                  <div style={{ marginBottom: "20px", backgroundColor: "#fdfaf7", padding: "15px", borderRadius: "4px", border: "1px dashed #ddd" }}>
-                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 0, marginBottom: "10px" }}>
-                      🚚 Datos para calcular Envío (Nacional)
-                    </p>
-                    <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-                      <input 
-                        type="text" placeholder="Cód. Postal" value={datosEnvio.cp} 
-                        onChange={(e) => setDatosEnvio({...datosEnvio, cp: e.target.value})}
-                        style={{ width: "35%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
-                      />
-                      <input 
-                        type="text" placeholder="Localidad / Prov." value={datosEnvio.localidad} 
-                        onChange={(e) => setDatosEnvio({...datosEnvio, localidad: e.target.value})}
-                        style={{ width: "65%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
-                      />
-                    </div>
-                    <input 
-                      type="text" placeholder="Dirección o Sucursal de preferencia" value={datosEnvio.direccion} 
-                      onChange={(e) => setDatosEnvio({...datosEnvio, direccion: e.target.value})}
-                      style={{ width: "100%", padding: "8px", border: "1px solid #ddd", fontSize: "12px", fontFamily: "sans-serif" }}
-                    />
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "25px" }}>
-                    <span style={{ fontSize: "14px", letterSpacing: "0.1em" }}>Total Productos:</span>
-                    <span style={{ fontSize: "18px", fontWeight: "bold" }}>${calcularTotal()}</span>
-                  </div>
-                  <button onClick={finalizarCompraWhatsApp} style={{ width: "100%", padding: "16px 0", backgroundColor: "#4b3f35", color: "white", border: "none", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer", fontFamily: 'serif' }}>
-                    Iniciar Pedido por WhatsApp 🚀
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* LIGHTBOX MODAL */}
-      <AnimatePresence>
-        {imagenModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", cursor: "zoom-out" }} onClick={() => setImagenModal(null)}>
-            <motion.img src={imagenModal} initial={{ scale: 0.8 }} animate={{ scale: 1 }} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", border: "2px solid white" }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      )}
     </div>
   );
 }
