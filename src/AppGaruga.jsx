@@ -30,7 +30,6 @@ export default function GarugaLanding() {
     }
   };
 
-  // Filtrar productos incluyendo la nueva categoría "dia del amigo"
   const productosFiltrados = productosData.filter(p => {
     if (categoriaActual === "todos") return true;
     if (categoriaActual === "stock disponible") {
@@ -39,7 +38,6 @@ export default function GarugaLanding() {
     return p.categoria === categoriaActual;
   });
 
-  // Helper para saber cuánto stock real queda disponible restando lo que ya está en el carrito
   const obtenerStockDisponibleReal = (producto, aroma) => {
     if (!producto.variantesStock) return 0;
     const stockMaximo = producto.variantesStock[aroma] || 0;
@@ -76,8 +74,7 @@ export default function GarugaLanding() {
       const nuevo = [...prev];
       const item = nuevo[index];
       
-      // Si es del stock inmediato, validar que al sumar no pase el límite real
-      if (valor > 0 && item.esStockInmediato) {
+      if (valor > 0 && item.esStockInmediate) {
         const stockMaximo = item.variantesStock[item.aroma] || 0;
         if (item.cantidad + valor > stockMaximo) {
           alert(`Lo sentimos, solo nos quedan ${stockMaximo} unidades de este aroma.`);
@@ -110,7 +107,7 @@ export default function GarugaLanding() {
     carrito.forEach(item => {
       mensaje += `• ${item.nombre} ${item.aroma ? `(${item.aroma})` : ''} x${item.cantidad} - ${item.precio}\n`;
     });
-    mensaje += `\n*Total Productos: $${calcularTotal()}*\n\n`;
+    mensaje += `\n*Total Productos: $${calcularTotal().toLocaleString("es-AR")}*\n\n`;
     mensaje += `🚚 *DATOS DE ENVÍO:*\n`;
     mensaje += `• C.P.: ${datosEnvio.cp}\n`;
     mensaje += `• Localidad: ${datosEnvio.localidad}\n`;
@@ -253,7 +250,7 @@ export default function GarugaLanding() {
         </div>
       </main>
 
-      {/* CARRITO ABIERTO (PANEL DE COMPRA & DATOS DE ENVÍO) */}
+      {/* CARRITO ABIERTO */}
       <AnimatePresence>
         {carritoAbierto && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100, display: "flex", justifyContent: "flex-end" }}>
