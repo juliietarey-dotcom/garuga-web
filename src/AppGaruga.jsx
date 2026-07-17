@@ -1,56 +1,13 @@
 // src/AppGaruga.jsx
 import React, { useState } from 'react';
 
-// Datos de los productos (extendidos con la categoría especial Día del Amigo)
+// Datos de los productos (Tus productos de siempre + los 4 combos nuevos integrados de forma limpia)
 const catalog = [
-  // --- COMBOS DÍA DEL AMIGO (NUEVOS) ---
-  {
-    id: "combo-1",
-    nombre: "Combo 1 - Kit Pintura Tray Chica",
-    precio: "$6.000",
-    categoria: "dia del amigo",
-    descripcion: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Ideal para regalar un momento creativo!",
-    imagen: "/productos/combo1.png", // Asegurate de guardar la imagen en tu carpeta public/productos con este nombre
-    aromas: ["Sin aroma (Kit Yeso)"],
-    stockInmediato: true
-  },
-  {
-    id: "combo-2",
-    nombre: "Combo 2 - Kit Pintura Cuenco Flor",
-    precio: "$6.000",
-    categoria: "dia del amigo",
-    descripcion: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y súper estético.",
-    imagen: "/productos/combo2.png",
-    aromas: ["Sin aroma (Kit Yeso)"],
-    stockInmediato: true
-  },
-  {
-    id: "combo-3",
-    nombre: "Combo 3 - Kit Pintura Tray Grande",
-    precio: "$8.000",
-    categoria: "dia del amigo",
-    descripcion: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.",
-    imagen: "/productos/combo3.png",
-    aromas: ["Sin aroma (Kit Yeso)"],
-    stockInmediato: true
-  },
-  {
-    id: "combo-4",
-    nombre: "Vela Amistad & Difusor Especial",
-    precio: "$12.000",
-    categoria: "dia del amigo",
-    descripcion: "Vela de soja especial 'Amistad' con doble pabilo y esencia a elección ($12.000) o Difusor de vidrio ámbar con varillas y esencia a elección ($12.000). Coincidir en el tiempo, elegir acompañarse y construir una historia en común.",
-    imagen: "/productos/combo4.png",
-    aromas: ["Bamboo", "Vainilla", "Coco", "Papaya", "Tilo-Jazmín", "Pepino-Sandía", "Madera y Cuero"],
-    stockInmediato: false // Al ser con esencias a elección, requiere preparación
-  },
-
-  // --- VELAS DE SOJA (CATÁLOGO ANTERIOR) ---
+  // --- VELAS DE SOJA ---
   {
     id: "roma",
     nombre: "Vela Roma -- 100 cc",
     precio: "$6.000",
-    categoria: "velas de soja",
     descripcion: "Hecha a mano con cera de soja 100% natural en envase de vidrio.",
     imagen: "/productos/roma.jpg",
     aromas: ["Bamboo", "Papaya", "Pepino-Sandía"],
@@ -60,7 +17,6 @@ const catalog = [
     id: "lata",
     nombre: "Vela Lata -- 100 cc",
     precio: "$7.500",
-    categoria: "velas de soja",
     descripcion: "Contenedor de lata metálica con tapa integrada.",
     imagen: "/productos/lata.jpg",
     aromas: ["Limón", "Tilo-Jazmín"],
@@ -70,7 +26,6 @@ const catalog = [
     id: "amanecer",
     nombre: "Vela Amanecer -- 150 cc",
     precio: "$8.000",
-    categoria: "velas de soja",
     descripcion: "Envase intermedio con gran persistencia aromática.",
     imagen: "/productos/amanecer.jpg",
     aromas: ["Vainilla", "Limón", "Papaya"],
@@ -80,7 +35,6 @@ const catalog = [
     id: "hexagonal",
     nombre: "Vela Hexagonal -- 150 cc",
     precio: "$8.000",
-    categoria: "velas de soja",
     descripcion: "Frasco de vidrio geométrico elegante.",
     imagen: "/productos/hexagonal.jpg",
     aromas: ["Limón", "Tilo-Jazmín", "Papaya"],
@@ -90,7 +44,6 @@ const catalog = [
     id: "olivia",
     nombre: "Vela Olivia -- 180 cc",
     precio: "$9.500",
-    categoria: "velas de soja",
     descripcion: "Frasco premium con tapa de madera o corcho protector.",
     imagen: "/productos/olivia.jpg",
     aromas: ["Coco", "Vainilla"],
@@ -100,7 +53,6 @@ const catalog = [
     id: "cuenco",
     nombre: "Vela Cuenco de madera -- 100 cc",
     precio: "$10.000",
-    categoria: "velas de soja",
     descripcion: "Estilo rústico, cuenco torneado ideal para decoración.",
     imagen: "/productos/cuenco.jpg",
     aromas: ["Coco", "Bamboo"],
@@ -110,7 +62,6 @@ const catalog = [
     id: "caramelera",
     nombre: "Vela Caramelera -- 80 cc",
     precio: "$11.000",
-    categoria: "velas de soja",
     descripcion: "Vidrio labrado delicado, objeto de diseño y distinción.",
     imagen: "/productos/caramelera.jpg",
     aromas: ["A pedido / Personalizado"],
@@ -120,19 +71,55 @@ const catalog = [
     id: "rune",
     nombre: "Vela Rune -- 200 cc",
     precio: "$12.500",
-    categoria: "velas de soja",
     descripcion: "La más grande del taller, doble pabilo para máxima intensidad.",
     imagen: "/productos/rune.jpg",
     aromas: ["Coco", "Vainilla", "Bamboo", "Pepino-Sandía"],
     stockInmediato: true
   },
 
-  // --- DIFUSORES (CATÁLOGO ANTERIOR) ---
+  // --- NUEVO: COMBOS DÍA DEL AMIGO (Integrados fluidamente en la lista) ---
+  {
+    id: "combo-1",
+    nombre: "Combo 1 - Kit Pintura Tray Chica",
+    precio: "$6.000",
+    descripcion: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Ideal para regalar un momento creativo!",
+    imagen: "/productos/combo1.png",
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-2",
+    nombre: "Combo 2 - Kit Pintura Cuenco Flor",
+    precio: "$6.000",
+    descripcion: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y súper estético.",
+    imagen: "/productos/combo2.png",
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-3",
+    nombre: "Combo 3 - Kit Pintura Tray Grande",
+    precio: "$8.000",
+    descripcion: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.",
+    imagen: "/productos/combo3.png",
+    aromas: ["Sin aroma (Kit Yeso)"],
+    stockInmediato: true
+  },
+  {
+    id: "combo-4",
+    nombre: "Vela Amistad & Difusor Especial",
+    precio: "$12.000",
+    descripcion: "Vela de soja especial 'Amistad' con doble pabilo y esencia a elección o Difusor de vidrio con varillas y esencia a elección ($12.000). Coincidir en el tiempo, elegir acompañarse.",
+    imagen: "/productos/combo4.png",
+    aromas: ["Bamboo", "Vainilla", "Coco", "Papaya", "Tilo-Jazmín", "Pepino-Sandía", "Madera y Cuero"],
+    stockInmediato: false
+  },
+
+  // --- DIFUSORES ---
   {
     id: "difusor-ambar",
     nombre: "Difusor Ámbar 125 ml",
     precio: "$12.000",
-    categoria: "difusores",
     descripcion: "Envase ámbar protector con varillas de bambú.",
     imagen: "/productos/ambar.jpg",
     aromas: ["Limón", "Pepino-Sandía", "Cuero y Madera"],
@@ -142,7 +129,6 @@ const catalog = [
     id: "difusor-cristal",
     nombre: "Difusor Cristal 125 ml",
     precio: "$12.000",
-    categoria: "difusores",
     descripcion: "Envase minimalista transparente con varillas de alta absorción.",
     imagen: "/productos/cristal.jpg",
     aromas: ["Limón", "Papaya", "Pepino-Sandía"],
@@ -154,7 +140,6 @@ const catalog = [
     id: "perfumina-250",
     nombre: "Perfumina 250 ml",
     precio: "$12.000",
-    categoria: "perfuminas",
     descripcion: "Home spray de alta concentración para textiles y ambientes.",
     imagen: "/productos/perfumina250.jpg",
     aromas: ["A pedido / Personalizado"],
@@ -164,7 +149,6 @@ const catalog = [
     id: "perfumina-500",
     nombre: "Perfumina 500 ml",
     precio: "$20.000",
-    categoria: "perfuminas",
     descripcion: "Presentación familiar para mantener la frescura de tu hogar.",
     imagen: "/productos/perfumina500.jpg",
     aromas: ["A pedido / Personalizado"],
@@ -174,19 +158,8 @@ const catalog = [
 
 export default function AppGaruga() {
   const [cart, setCart] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("dia del amigo"); // Arranca por defecto mostrando la sección del día del amigo!
   const [aromaSelections, setAromaSelections] = useState({});
   const [deliveryInfo, setDeliveryInfo] = useState({ cp: '', localidad: '', direccion: '' });
-
-  const categories = [
-    { id: "dia del amigo", label: "🎁 Día del Amigo" },
-    { id: "velas de soja", label: "🕯️ Velas de Soja" },
-    { id: "difusores", label: "✨ Difusores" },
-    { id: "perfuminas", label: "🌸 Perfuminas" }
-  ];
-
-  // Filtra los productos según la categoría seleccionada
-  const filteredProducts = catalog.filter(p => p.categoria === selectedCategory);
 
   const handleAromaChange = (productId, aroma) => {
     setAromaSelections(prev => ({ ...prev, [productId]: aroma }));
@@ -194,8 +167,6 @@ export default function AppGaruga() {
 
   const addToCart = (product) => {
     const selectedAroma = aromaSelections[product.id] || product.aromas[0];
-    
-    // Verificamos si ya existe el mismo producto con el mismo aroma en el carrito
     const existingIndex = cart.findIndex(item => item.id === product.id && item.aroma === selectedAroma);
 
     if (existingIndex > -1) {
@@ -222,7 +193,6 @@ export default function AppGaruga() {
     setCart(newCart);
   };
 
-  // Esta es tu función de pago integrada con Mercado Pago de forma 100% segura que armamos antes
   const iniciarPagoMercadoPago = async () => {
     if (!deliveryInfo.cp || !deliveryInfo.localidad) {
       alert("Por favor, completá tu Código Postal y Localidad para calcular el envío.");
@@ -249,7 +219,6 @@ export default function AppGaruga() {
     }
   };
 
-  // Alternativa simple por WhatsApp por si el backend está en desarrollo o prefieren transferencia
   const enviarPorWhatsApp = () => {
     if (cart.length === 0) return;
     let mensaje = "Hola Garuga! 🕯️ Quiero hacer el siguiente pedido:\n\n";
@@ -264,13 +233,13 @@ export default function AppGaruga() {
   return (
     <div style={{ backgroundColor: '#FAF6F0', color: '#4B3F35', fontFamily: 'Segoe UI, sans-serif', minHeight: '100vh', padding: '20px' }}>
       
-      {/* HEADER DE LA TIENDA */}
+      {/* HEADER DE LA TIENDA (Idéntico al original) */}
       <header style={{ textAlign: 'center', margin: '40px 0' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', letterSpacing: '2px', margin: '0 0 10px 0' }}>GARUGA</h1>
         <p style={{ fontStyle: 'italic', fontSize: '1.1rem', color: '#7c6a59' }}>Aromas que transforman tus rincones favoritos</p>
       </header>
 
-      {/* BANNER DE BIENVENIDA & INFORMACIÓN DE ENVÍO */}
+      {/* BANNER DE BIENVENIDA (Limpio y unificado) */}
       <div style={{ maxWidth: '800px', margin: '0 auto 40px auto', padding: '20px', border: '1px solid #E3D5CA', borderRadius: '8px', backgroundColor: '#fff' }}>
         <h3 style={{ marginTop: 0, fontWeight: 'bold' }}>¡Bienvenidos a Garuga! 🕯️</h3>
         <p>Creamos velas de cera de soja y aromas pensados para abrazar tus ambientes cotidianos.</p>
@@ -284,41 +253,18 @@ export default function AppGaruga() {
         </p>
       </div>
 
-      {/* CATEGORÍAS (NAVEGACIÓN) */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap', marginBottom: '40px' }}>
-        {categories.map(cat => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat.id)}
-            style={{
-              padding: '10px 20px',
-              border: selectedCategory === cat.id ? '2px solid #4B3F35' : '1px solid #E3D5CA',
-              borderRadius: '25px',
-              backgroundColor: selectedCategory === cat.id ? '#4B3F35' : '#fff',
-              color: selectedCategory === cat.id ? '#FAF6F0' : '#4B3F35',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* LISTADO DE PRODUCTOS */}
+      {/* LISTADO DE TODOS LOS PRODUCTOS DE CORRIDO */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
-        {filteredProducts.map(product => {
+        {catalog.map(product => {
           const selectedAroma = aromaSelections[product.id] || product.aromas[0];
           return (
             <div key={product.id} style={{ backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #E3D5CA', display: 'flex', flexDirection: 'column' }}>
               <div style={{ height: '300px', backgroundColor: '#f0f0f0', overflow: 'hidden', position: 'relative' }}>
-                {/* Visualizador de la imagen del producto */}
                 <img 
                   src={product.imagen} 
                   alt={product.nombre} 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=300&auto=format&fit=crop"; }} // Placeholder elegante si falta subir la foto
+                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=300&auto=format&fit=crop"; }}
                 />
                 {!product.stockInmediato && (
                   <span style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#E3D5CA', color: '#4B3F35', padding: '5px 10px', borderRadius: '15px', fontSize: '0.8rem', fontWeight: 'bold' }}>
@@ -331,7 +277,6 @@ export default function AppGaruga() {
                 <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: '#666', lineHeight: '1.4', flexGrow: 1 }}>{product.descripcion}</p>
                 <span style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#4B3F35', marginBottom: '15px', display: 'block' }}>{product.precio}</span>
                 
-                {/* SELECTOR DE FRAGANCIAS */}
                 {product.aromas.length > 1 && (
                   <div style={{ marginBottom: '15px' }}>
                     <label style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Elegí el Aroma:</label>
@@ -359,7 +304,7 @@ export default function AppGaruga() {
         })}
       </div>
 
-      {/* CARRITO DE COMPRAS FLOTANTE / INFERIOR */}
+      {/* CARRITO DE COMPRAS */}
       {cart.length > 0 && (
         <div style={{ maxWidth: '600px', margin: '50px auto 0 auto', padding: '25px', backgroundColor: '#fff', borderRadius: '12px', border: '2px solid #4B3F35', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
           <h3 style={{ margin: '0 0 20px 0', borderBottom: '2px solid #E3D5CA', paddingBottom: '10px' }}>🛒 Tu Carrito de Compra</h3>
@@ -380,9 +325,8 @@ export default function AppGaruga() {
             ))}
           </div>
 
-          {/* DATOS DE ENVÍO SEGUROS */}
           <div style={{ marginTop: '25px', padding: '15px', backgroundColor: '#FAF6F0', borderRadius: '8px' }}>
-            <h4 style={{ margin: '0 0 10px 0', fontSize: '0.95rem' }}>📦 Datos para el Envío (Correo Argentino / Andreani)</h4>
+            <h4 style={{ margin: '0 0 10px 0', fontSize: '0.95rem' }}>📦 Datos para el Envío</h4>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
               <input 
                 type="text" 
@@ -408,7 +352,6 @@ export default function AppGaruga() {
             />
           </div>
 
-          {/* BOTONES DE PAGO SEGUROS */}
           <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <button 
               onClick={iniciarPagoMercadoPago}
