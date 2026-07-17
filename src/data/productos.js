@@ -2,9 +2,56 @@
 // Tip de ingeniería: Para controlar el stock inmediato, usá el formato "Aroma": Cantidad (número).
 // Si ponés 0 o dejás las llaves vacías {}, figurará como "Agotado" en la pestaña de Stock Disponible.
 
-export const esenciasGlobales = ["Vainilla", "Coco", "Bamboo", "Limón", "Papaya", "Pepino-Sandía", "Tilo-Jazmín", "Peonías", "Cuero y Madera"];
+export const esenciasGlobales = [
+  "Vainilla", 
+  "Coco", 
+  "Bamboo", 
+  "Limón", 
+  "Papaya", 
+  "Pepino-Sandía", 
+  "Tilo-Jazmín", 
+  "Peonías", 
+  "Cuero y Madera",
+  "Cherry", 
+  "Coco-Vainilla", 
+  "Frambuesa-Pimienta rosa"
+];
 
 export const productosData = [
+  // --- DÍA DEL AMIGO (COMBOS) ---
+  { 
+    categoria: "dia del amigo", 
+    nombre: "Combo 1 ", 
+    precio: "$6000", 
+    desc: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Regalá un momento creativo!", 
+    img: "/productos/combo1.png", 
+    variantesStock: { "Kit Yeso": 3 } 
+  },
+  { 
+    categoria: "dia del amigo", 
+    nombre: "Combo 2 ", 
+    precio: "$6000", 
+    desc: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y estético.", 
+    img: "/productos/combo2.png", 
+    variantesStock: { "Kit Yeso": 3 } 
+  },
+  { 
+    categoria: "dia del amigo", 
+    nombre: "Combo 3 ", 
+    precio: "$8000", 
+    desc: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.", 
+    img: "/productos/combo3.png", 
+    variantesStock: { "Kit Yeso": 3 } 
+  },
+  { 
+    categoria: "dia del amigo", 
+    nombre: "Vela Amistad & Difusor Especial", 
+    precio: "$12000", 
+    desc: "Vela de soja especial 'Amistad' de doble pabilo o difusor con varillas y esencia a elección. Coincidir en el tiempo, elegir acompañarse. $12.000 cada producto", 
+    img: "/productos/combo4.png", 
+    variantesStock: {  } 
+  },
+
   // --- VELAS DE SOJA ---
   { 
     categoria: "velas de soja", 
@@ -60,7 +107,7 @@ export const productosData = [
     precio: "$11000", 
     desc: "Esencia a elección", 
     img: "/productos/caramelera.jpg", 
-    variantesStock: {} // Sin stock inmediato actual
+    variantesStock: {} 
   },
   { 
     categoria: "velas de soja", 
@@ -96,7 +143,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/perfumina250.jpg", 
-    variantesStock: {} // Sin stock inmediato actual
+    variantesStock: {} 
   },
   { 
     categoria: "perfuminas", 
@@ -104,6 +151,6 @@ export const productosData = [
     precio: "$20000", 
     desc: "Esencia a elección", 
     img: "/productos/perfumina500.jpg", 
-    variantesStock: {} // Sin stock inmediato actual
+    variantesStock: {} 
   }
 ];
