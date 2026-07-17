@@ -46,8 +46,8 @@ export const productosData = [
   { 
     categoria: "dia del amigo", 
     nombre: "Vela Amistad & Difusor Especial", 
-    precio: "$12000", 
-    desc: "Vela de soja especial 'Amistad' de doble pabilo o difusor con varillas y esencia a elección. Coincidir en el tiempo, elegir acompañarse. $12.000 cada producto", 
+    precio: " Vela: $12.000 y Difusor: $12.000", 
+    desc: "Vela de soja especial 'Amistad' de 200 cc de cera de soja o difusor con varillas y esencia a elección. Coincidir en el tiempo, elegir acompañarse. $12.000 cada producto", 
     img: "/productos/combo4.png", 
     variantesStock: {  } 
   },
@@ -75,7 +75,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Esencia a elección", 
     img: "/productos/amanecer.jpg", 
-    variantesStock: {  "Limón": 1, "Papaya": 1 } 
+    variantesStock: {  "Limón": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -115,7 +115,7 @@ export const productosData = [
     precio: "$12500", 
     desc: "Esencia a elección", 
     img: "/productos/rune.jpg", 
-    variantesStock: {  "Vainilla": 1, "Bamboo": 1 } 
+    variantesStock: {   } 
   },
   
   // --- DIFUSORES ---
