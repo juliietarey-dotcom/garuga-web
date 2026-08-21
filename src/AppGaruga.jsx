@@ -35,7 +35,8 @@ export default function GarugaLanding() {
     if (categoriaActual === "stock disponible") {
       return p.variantesStock && Object.keys(p.variantesStock).length > 0;
     }
-    return p.categoria === categoriaActual;
+    // Compara convirtiendo a minúsculas para evitar problemas de mayúsculas ("PIEZAS DE YESO" vs "piezas de yeso")
+    return p.categoria.toLowerCase() === categoriaActual.toLowerCase();
   });
 
   const obtenerStockDisponibleReal = (producto, aroma) => {
@@ -134,7 +135,7 @@ export default function GarugaLanding() {
             onClick={() => setCarritoAbierto(true)}
             style={{ position: "absolute", right: "30px", top: "35px", background: "none", border: "none", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
           >
-            👜 <span style={{ fontSize: "12px", fontFamily: "sans-serif", backgroundColor: "#4b3f35", color: "white", borderRadius: "50%", padding: "2px 6px" }}>{carrito.reduce((a, b) => a + b.cantidad, 0)}</span>
+            ... <span style={{ fontSize: "12px", fontFamily: "sans-serif", backgroundColor: "#4b3f35", color: "white", borderRadius: "50%", padding: "2px 6px" }}>{carrito.reduce((a, b) => a + b.cantidad, 0)}</span>
           </button>
 
           <img 
@@ -145,13 +146,13 @@ export default function GarugaLanding() {
           />
 
           <nav style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "30px" }}>
-            {["todos", "stock disponible", "dia del amigo", "velas de soja", "perfuminas", "difusores"].map((cat) => (
+            {["todos", "stock disponible", "piezas de yeso", "velas de soja", "perfuminas", "difusores"].map((cat) => (
               <button 
                 key={cat} 
                 onClick={() => seleccionarCategoria(cat)} 
                 style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: "5px 0", fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase", color: categoriaActual === cat ? "#000" : "#888", fontWeight: categoriaActual === cat ? "bold" : "normal", transition: "color 0.3s ease", fontFamily: 'serif' }}
               >
-                {cat === "stock disponible" ? "✨ " + cat : cat === "dia del amigo" ? "🎁 " + cat : cat}
+                {cat === "stock disponible" ? "✨ " + cat : cat === "piezas de yeso" ? "🏺 " + cat : cat}
                 {categoriaActual === cat && (
                   <motion.div layoutId="underline" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "1px", backgroundColor: "#000" }} />
                 )}
@@ -166,7 +167,6 @@ export default function GarugaLanding() {
         <h1 style={{ fontSize: "36px", marginBottom: "35px", fontWeight: "300", fontStyle: "italic", color: "#333" }}>¡Bienvenidos a Garuga!</h1>
         <p style={{ fontSize: "19px", color: "#555", lineHeight: "1.9", marginBottom: "25px", fontStyle: "italic" }}>
           Velas de cera de soja aromáticas, difusores y perfuminas hechas con amor y buenas vibras. Envíos a todo el país.
-      
         </p>
       </section>
 
@@ -232,7 +232,7 @@ export default function GarugaLanding() {
                           cursor: sinStock ? "not-allowed" : "pointer", fontFamily: 'serif' 
                         }}
                       >
-                        {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) 👜`}
+                        {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) ...`}
                       </button>
                     );
                   })}
