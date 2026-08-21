@@ -18,39 +18,17 @@ export const esenciasGlobales = [
 ];
 
 export const productosData = [
-  // --- DÍA DEL AMIGO (COMBOS) ---
+  // --- PIEZAS DE YESO ---
   { 
-    categoria: "dia del amigo", 
-    nombre: "Combo 1 ", 
+    categoria: "PIEZAS DE YESO", 
+    nombre: "Bandeja chica de yeso ", 
     precio: "$6000", 
-    desc: "Bandeja chica de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. ¡Regalá un momento creativo!", 
-    img: "/productos/combo1.png", 
+    desc: "Bandeja chica de yeso. Podés mandarme inspo de un dieseño y yo la pinto ;) ", 
+    img: "/productos/bandeja.jpeg", 
+    img: "/productos/bandejas.jpeg",
     variantesStock: {  } 
   },
-  { 
-    categoria: "dia del amigo", 
-    nombre: "Combo 2 ", 
-    precio: "$6000", 
-    desc: "Cuenco flor de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4. Un regalo interactivo y estético.", 
-    img: "/productos/combo2.png", 
-    variantesStock: {  } 
-  },
-  { 
-    categoria: "dia del amigo", 
-    nombre: "Combo 3 ", 
-    precio: "$8000", 
-    desc: "Bandeja grande de yeso + 3 colores acrílicos de 3 ml a elección + laca 3 ml + pincel n°4.", 
-    img: "/productos/combo3.png", 
-    variantesStock: {  } 
-  },
-  { 
-    categoria: "dia del amigo", 
-    nombre: "Vela Amistad & Difusor Especial", 
-    precio: " Vela: $12.000 y Difusor: $12.000", 
-    desc: "Vela de soja especial 'Amistad' de 200 cc de cera de soja o difusor con varillas y esencia a elección. Coincidir en el tiempo, elegir acompañarse. $12.000 cada producto", 
-    img: "/productos/combo4.png", 
-    variantesStock: {  } 
-  },
+
 
   // --- VELAS DE SOJA ---
   { 
@@ -67,7 +45,7 @@ export const productosData = [
     precio: "$7500", 
     desc: "Esencia a elección", 
     img: "/productos/lata.jpg", 
-    variantesStock: { "Limón": 1, "Tilo-Jazmín": 1 } 
+    variantesStock: { "Limón": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -83,7 +61,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Esencia a elección", 
     img: "/productos/hexagonal.jpg", 
-    variantesStock: { "Limón": 1, "Papaya": 1 } 
+    variantesStock: { "Limón": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -133,7 +111,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/cristal.jpg", 
-    variantesStock: { "Limón": 1 } 
+    variantesStock: {  } 
   },
 
   // --- PERFUMINAS ---
