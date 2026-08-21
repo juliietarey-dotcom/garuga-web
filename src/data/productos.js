@@ -22,9 +22,9 @@ export const productosData = [
   { 
     categoria: "PIEZAS DE YESO", 
     nombre: "Bandeja chica de yeso", 
-    precio: "$6000", 
+    precio: "$10000", 
     desc: "Bandeja chica de yeso. Podés mandarme inspo de un diseño y yo la pinto ;) ", 
-    imgs: ["/productos/bandeja.jpeg", "/productos/bandejas.jpeg"], // <--- Lista con ambas imágenes .jpeg
+    imgs: ["/productos/Bandeja.jpeg", "/productos/Bandejas.jpeg"], // <--- Lista con ambas imágenes .jpeg
     variantesStock: { } 
   },
 
