@@ -35,9 +35,16 @@ export default function GarugaLanding() {
     if (categoriaActual === "stock disponible") {
       return p.variantesStock && Object.keys(p.variantesStock).length > 0;
     }
-    // Compara convirtiendo a minúsculas para evitar problemas de mayúsculas ("PIEZAS DE YESO" vs "piezas de yeso")
     return p.categoria.toLowerCase() === categoriaActual.toLowerCase();
   });
+
+  // Helper para obtener la imagen principal (soporta img única o array imgs)
+  const obtenerImagenPrincipal = (prod) => {
+    if (Array.isArray(prod.imgs) && prod.imgs.length > 0) {
+      return prod.imgs[0];
+    }
+    return prod.img || "/logo.png";
+  };
 
   const obtenerStockDisponibleReal = (producto, aroma) => {
     if (!producto.variantesStock) return 0;
@@ -135,7 +142,7 @@ export default function GarugaLanding() {
             onClick={() => setCarritoAbierto(true)}
             style={{ position: "absolute", right: "30px", top: "35px", background: "none", border: "none", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
           >
-            ... <span style={{ fontSize: "12px", fontFamily: "sans-serif", backgroundColor: "#4b3f35", color: "white", borderRadius: "50%", padding: "2px 6px" }}>{carrito.reduce((a, b) => a + b.cantidad, 0)}</span>
+            👜 <span style={{ fontSize: "12px", fontFamily: "sans-serif", backgroundColor: "#4b3f35", color: "white", borderRadius: "50%", padding: "2px 6px" }}>{carrito.reduce((a, b) => a + b.cantidad, 0)}</span>
           </button>
 
           <img 
@@ -183,71 +190,75 @@ export default function GarugaLanding() {
       {/* GRILLA DE PRODUCTOS */}
       <main ref={productosRef} style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "80px 50px" }}>
-          {productosFiltrados.map((prod, i) => (
-            <motion.div layout key={prod.nombre + i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <div>
-                <div 
-                  style={{ aspectRatio: "3/4", overflow: "hidden", backgroundColor: "#f9f9f9", marginBottom: "28px", borderRadius: "2px", cursor: "pointer", border: "1px solid #f0f0f0" }}
-                  onClick={() => setImagenModal(prod.img)}
-                >
-                  <motion.img whileHover={{ scale: 1.05 }} src={prod.img} alt={prod.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          {productosFiltrados.map((prod, i) => {
+            const imgPrincipal = obtenerImagenPrincipal(prod);
+            
+            return (
+              <motion.div layout key={prod.nombre + i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <div>
+                  <div 
+                    style={{ aspectRatio: "3/4", overflow: "hidden", backgroundColor: "#f9f9f9", marginBottom: "28px", borderRadius: "2px", cursor: "pointer", border: "1px solid #f0f0f0" }}
+                    onClick={() => setImagenModal(imgPrincipal)}
+                  >
+                    <motion.img whileHover={{ scale: 1.05 }} src={imgPrincipal} alt={prod.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                  
+                  <h3 style={{ fontSize: "16px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: "12px" }}>{prod.nombre}</h3>
+                  
+                  {categoriaActual === "stock disponible" ? (
+                    <div style={{ marginBottom: "20px", padding: "12px", backgroundColor: "#fffaf0", border: "1px solid #f3e5ab" }}>
+                      <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", color: "#b8860b" }}>Stock Inmediato:</p>
+                      {prod.variantesStock && Object.entries(prod.variantesStock).map(([aroma, cant]) => (
+                        <p key={aroma} style={{ fontSize: "13px", fontStyle: "italic", margin: "4px 0" }}>
+                          {aroma}: <strong>{cant} unidades</strong> disponibles
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: "12px", color: "#999", marginBottom: "22px", fontStyle: "italic" }}>{prod.desc}</p>
+                  )}
+
+                  <p style={{ fontSize: "18px", marginBottom: "25px", color: "#333" }}>{prod.precio}</p>
                 </div>
-                
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: "12px" }}>{prod.nombre}</h3>
-                
+
+                {/* LÓGICA DE BOTONES INTELIGENTES */}
                 {categoriaActual === "stock disponible" ? (
-                  <div style={{ marginBottom: "20px", padding: "12px", backgroundColor: "#fffaf0", border: "1px solid #f3e5ab" }}>
-                    <p style={{ fontSize: "11px", fontWeight: "bold", textTransform: "uppercase", color: "#b8860b" }}>Stock Inmediato:</p>
-                    {prod.variantesStock && Object.entries(prod.variantesStock).map(([aroma, cant]) => (
-                      <p key={aroma} style={{ fontSize: "13px", fontStyle: "italic", margin: "4px 0" }}>
-                        {aroma}: <strong>{cant} unidades</strong> disponibles
-                      </p>
-                    ))}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {prod.variantesStock && Object.keys(prod.variantesStock).map(aroma => {
+                      const restante = obtenerStockDisponibleReal(prod, aroma);
+                      const sinStock = restante <= 0;
+                      
+                      return (
+                        <button 
+                          key={aroma}
+                          disabled={sinStock}
+                          onClick={() => agregarAlCarrito(prod, aroma, true)}
+                          style={{ 
+                            width: "100%", padding: "12px 0", 
+                            border: "1px solid #4b3f35", 
+                            backgroundColor: sinStock ? "#eee" : "transparent", 
+                            color: sinStock ? "#999" : "#4b3f35",
+                            fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", 
+                            cursor: sinStock ? "not-allowed" : "pointer", fontFamily: 'serif' 
+                          }}
+                        >
+                          {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) 👜`}
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : (
-                  <p style={{ fontSize: "12px", color: "#999", marginBottom: "22px", fontStyle: "italic" }}>{prod.desc}</p>
+                  <a 
+                    href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre}.`}
+                    target="_blank" rel="noreferrer"
+                    style={{ display: "inline-block", width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", fontFamily: 'serif' }}
+                  >
+                    Encargar por WhatsApp 💬
+                  </a>
                 )}
-
-                <p style={{ fontSize: "18px", marginBottom: "25px", color: "#333" }}>{prod.precio}</p>
-              </div>
-
-              {/* LÓGICA DE BOTONES INTELIGENTES */}
-              {categoriaActual === "stock disponible" ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {prod.variantesStock && Object.keys(prod.variantesStock).map(aroma => {
-                    const restante = obtenerStockDisponibleReal(prod, aroma);
-                    const sinStock = restante <= 0;
-                    
-                    return (
-                      <button 
-                        key={aroma}
-                        disabled={sinStock}
-                        onClick={() => agregarAlCarrito(prod, aroma, true)}
-                        style={{ 
-                          width: "100%", padding: "12px 0", 
-                          border: "1px solid #4b3f35", 
-                          backgroundColor: sinStock ? "#eee" : "transparent", 
-                          color: sinStock ? "#999" : "#4b3f35",
-                          fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", 
-                          cursor: sinStock ? "not-allowed" : "pointer", fontFamily: 'serif' 
-                        }}
-                      >
-                        {sinStock ? `Agotado: ${aroma} ✕` : `Llevar ${aroma} (${restante} disp.) ...`}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <a 
-                  href={`https://wa.me/5492236325321?text=Hola Garuga! Me interesa encargar: ${prod.nombre}.`}
-                  target="_blank" rel="noreferrer"
-                  style={{ display: "inline-block", width: "100%", padding: "16px 0", border: "1px solid #000", backgroundColor: "#000", color: "#fff", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", fontFamily: 'serif' }}
-                >
-                  Encargar por WhatsApp 💬
-                </a>
-              )}
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </main>
 
