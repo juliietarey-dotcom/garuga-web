@@ -21,13 +21,12 @@ export const productosData = [
   // --- PIEZAS DE YESO ---
   { 
     categoria: "PIEZAS DE YESO", 
-    nombre: "Bandeja chica de yeso ", 
-    precio: "$10000", 
-    desc: "Bandeja chica de yeso. Podés mandarme inspo de un dieseño y yo la pinto ;) ", 
-    img: "/productos/bandeja.jpeg", 
-    variantesStock: {  } 
+    nombre: "Bandeja chica de yeso", 
+    precio: "$6000", 
+    desc: "Bandeja chica de yeso. Podés mandarme inspo de un diseño y yo la pinto ;) ", 
+    imgs: ["/productos/bandeja.jpeg", "/productos/bandejas.jpeg"], // <--- Lista con ambas imágenes .jpeg
+    variantesStock: { } 
   },
-
 
   // --- VELAS DE SOJA ---
   { 
@@ -36,7 +35,7 @@ export const productosData = [
     precio: "$6000", 
     desc: "Esencia a elección", 
     img: "/productos/roma.jpg", 
-    variantesStock: {  } 
+    variantesStock: { } 
   },
   { 
     categoria: "velas de soja", 
@@ -52,7 +51,7 @@ export const productosData = [
     precio: "$8000", 
     desc: "Esencia a elección", 
     img: "/productos/amanecer.jpg", 
-    variantesStock: {  "Limón": 1 } 
+    variantesStock: { "Limón": 1 } 
   },
   { 
     categoria: "velas de soja", 
@@ -68,7 +67,7 @@ export const productosData = [
     precio: "$9500", 
     desc: "Esencia a elección", 
     img: "/productos/olivia.jpg", 
-    variantesStock: {  } 
+    variantesStock: { } 
   },
   { 
     categoria: "velas de soja", 
@@ -92,7 +91,7 @@ export const productosData = [
     precio: "$12500", 
     desc: "Esencia a elección", 
     img: "/productos/rune.jpg", 
-    variantesStock: {   } 
+    variantesStock: { } 
   },
   
   // --- DIFUSORES ---
@@ -102,7 +101,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/ambar.jpg", 
-    variantesStock: {  } 
+    variantesStock: { } 
   },
   { 
     categoria: "difusores", 
@@ -110,7 +109,7 @@ export const productosData = [
     precio: "$12000", 
     desc: "Esencia a elección", 
     img: "/productos/cristal.jpg", 
-    variantesStock: {  } 
+    variantesStock: { } 
   },
 
   // --- PERFUMINAS ---
